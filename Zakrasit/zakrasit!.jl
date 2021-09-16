@@ -35,10 +35,10 @@ function move_left!(r::Robot)
 end
 
 function move_to_beginplace!(r::Robot, x, y)
-    for i in 0:x
+    for i in 0:x-1
         move!(r, HorizonSide(3))
     end
-    for j in 0:y
+    for j in 0:y-1
         move!(r, HorizonSide(2))
     end
 end
@@ -53,7 +53,7 @@ function zakrasit!(r::Robot)
             break
         end
     end
-    #a, b = move_to_startplace!(r)
+    a, b = move_to_startplace!(r)
     move_to_beginplace!(r, x, y)
 end
 
