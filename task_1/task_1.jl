@@ -1,5 +1,3 @@
-#using HorizonSideRobots
-
 function krest!(r::Robot)
     dic = [Nord, Ost, Sud, West]
     
@@ -18,4 +16,3 @@ function krest!(r::Robot)
         end
     end    
 end  
-#krest!(r)
