@@ -53,7 +53,7 @@ function zakrasit!(r::Robot)
             break
         end
     end
-    -move_to_startplace!(r)
+    move_to_startplace!(r)
     move_to_beginplace!(r, x, y)
 end
 
