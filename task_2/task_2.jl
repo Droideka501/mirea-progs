@@ -1,61 +1,40 @@
-function move_to_startplace!(r::Robot)
-    x = 0
-    y = 0
+
+function move_to_border!(r::Robot)
+    c = 0
     while !isborder(r, HorizonSide(0))
         move!(r, HorizonSide(0))
-        y+=1
+        c+=1
     end
-    while !isborder(r, HorizonSide(1))
-        move!(r, HorizonSide(1))
-        x+=1
-    end
-    return (x, y)
+    return c
 end
 
-function move_rigth!(r::Robot)
-    while !isborder(r, HorizonSide(3))
-        putmarker!(r)
-        move!(r, HorizonSide(3))
-    end
-    if !isborder(r, HorizonSide(2))
-        putmarker!(r)
+function move_backward!(r::Robot, c)
+    for i in 1:c
         move!(r, HorizonSide(2))
     end
 end
 
-function move_left!(r::Robot)
-    while !isborder(r, HorizonSide(1))
-        putmarker!(r)
-        move!(r, HorizonSide(1))
-    end
-    if !isborder(r, HorizonSide(2))
-        putmarker!(r)
-        move!(r, HorizonSide(2))
-    end
-end
-
-function move_to_beginplace!(r::Robot, x, y)
-    for i in 0:x-1
-        move!(r, HorizonSide(3))
-    end
-    for j in 0:y-1
-        move!(r, HorizonSide(2))
-    end
-end
-
-function zakrasit!(r::Robot)
-    x, y = move_to_startplace!(r)
-    while !isborder(r, HorizonSide(3)) || !isborder(r, HorizonSide(1))
-        move_rigth!(r)
-        move_left!(r)
-
+function move_around!(r::Robot)
+    i = 1
+    while true
+        i = i%4
         if ismarker(r)
             break
         end
+        while !isborder(r, HorizonSide(i%4))
+            if ismarker(r)
+                break
+            end
+            putmarker!(r)
+            move!(r, HorizonSide(i%4))
+        end
+        i += 1
     end
-    a, b = move_to_startplace!(r)
-    move_to_beginplace!(r, x, y)
 end
 
 
-
+function perimetr!(r::Robot)
+    count = move_to_border!(r)
+    move_around!(r)
+    move_backward!(r, count)
+end
