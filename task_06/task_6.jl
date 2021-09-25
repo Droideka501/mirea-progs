@@ -70,6 +70,7 @@ function search_object!(r::Robot)
                     return i
                 end
             end
+            y-=1
         end
         if i % 2 != 0
             for _ in 1:(x-1)
@@ -79,6 +80,7 @@ function search_object!(r::Robot)
                     return i
                 end
             end
+            x-=1
         end
         i = (i + 1)%4
     end
