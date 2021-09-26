@@ -25,24 +25,41 @@ function move_to_beginplace!(r::Robot, X, Y)
                     move!(r, HorizonSide(0))
                     y-=1
                 end
-                move!(r, HorizonSide(1))
-                x -= 1
+                if !isborder(r, HorizonSide(1))
+                    move!(r, HorizonSide(1))
+                    x -= 1
+                end
             elseif x < 0
-                
-                move!(r, HorizonSide(3))
-                x += 1
+                if isborder(r, HorizonSide(3))
+                    move!(r, HorizonSide(0))
+                    y-=1
+                end
+                if !isborder(r, HorizonSide(3))
+                    move!(r, HorizonSide(3))
+                    x += 1
+                end
             end
         end
         while y != 0
-            if isborder(r, HorizonSide(0))
-                move!(r, HorizonSide(1))
-                x-=1
-            elseif y > 0
-                move!(r, HorizonSide(0))
-                y -= 1
+            
+            if y > 0
+                if isborder(r, HorizonSide(0))
+                    move!(r, HorizonSide(1))
+                    x-=1
+                end
+                if !isborder(r, HorizonSide(0))
+                    move!(r, HorizonSide(0))
+                    y -= 1
+                end
             elseif y < 0
-                move!(r, HorizonSide(2))
-                y += 1
+                if isborder(r, HorizonSide(2))
+                    move!(r, HorizonSide(1))
+                    x-=1
+                end
+                if !isborder(r, HorizonSide(2))
+                    move!(r, HorizonSide(2))
+                    y += 1
+                end
             end
         end
     end
