@@ -8,6 +8,6 @@ Task_7 completed, ready to check
 Task_8 completed, ready to check
 Task_9 completed, ready to check
 Task_10 completed, ready to check
-Task_11 !completed, ready to check
-Task_12 completed, ready to check
+Task_11 completed, ready to check
+Task_12 !completed, ready to check
 Task_13 completed, ready to check

@@ -1,69 +1,6 @@
-function move_to_startplace!(r::Robot)
-    x = 0
-    y = 0
-    while !isborder(r, HorizonSide(2))
-        move!(r, HorizonSide(2))
-        y+=1
-    end
-    while !isborder(r, HorizonSide(3))
-        move!(r, HorizonSide(3))
-        x+=1
-    end
-    return (x, y)
-end
+include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
 
-function move_to_beginplace!(r::Robot, X, Y)
-    x = X
-    y = Y
-    
-    while x != 0 || y != 0
-        while x != 0 
-            if x > 0
-                if isborder(r, HorizonSide(1))
-                    move!(r, HorizonSide(0))
-                    y-=1
-                end
-                if !isborder(r, HorizonSide(1))
-                    move!(r, HorizonSide(1))
-                    x -= 1
-                end
-            elseif x < 0
-                if isborder(r, HorizonSide(3))
-                    move!(r, HorizonSide(0))
-                    y-=1
-                end
-                if !isborder(r, HorizonSide(3))
-                    move!(r, HorizonSide(3))
-                    x += 1
-                end
-            end
-        end
-        while y != 0
-            
-            if y > 0
-                if isborder(r, HorizonSide(0))
-                    move!(r, HorizonSide(1))
-                    x-=1
-                end
-                if !isborder(r, HorizonSide(0))
-                    move!(r, HorizonSide(0))
-                    y -= 1
-                end
-            elseif y < 0
-                if isborder(r, HorizonSide(2))
-                    move!(r, HorizonSide(1))
-                    x-=1
-                end
-                if !isborder(r, HorizonSide(2))
-                    move!(r, HorizonSide(2))
-                    y += 1
-                end
-            end
-        end
-    end
-end
-
-function move_to_wall!(r::Robot)
+function moveToWall!(r::Robot)
     c = 0
     while !isborder(r, HorizonSide(1))
         putmarker!(r)
@@ -74,9 +11,8 @@ function move_to_wall!(r::Robot)
     return c
 end
 
-function lestniza!(r::Robot)
-    x, y = move_to_startplace!(r)
-    c = move_to_wall!(r)
+function moveAndPut!(r)
+    c = moveToWall!(r)
     while c > 0
         if isborder(r, HorizonSide(0))
             break
@@ -85,9 +21,13 @@ function lestniza!(r::Robot)
         for i in 1:c-1
             move!(r, HorizonSide(3))
         end
-        c = move_to_wall!(r)
+        c = moveToWall!(r)
     end
-    move_to_startplace!(r)
-    move_to_beginplace!(r, x, y)
-    
+end
+
+function lestniza!(r::Robot)
+    sides = moveAndReturnDirections!(r)
+    moveAndPut!(r)
+    moveToStartplace!(r)
+    moveToBeginplace!(r, sides)
 end
