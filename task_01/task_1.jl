@@ -1,16 +1,26 @@
+include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
+
+
+function moveAndPut!(r::Robot, side::HorizonSide)
+    while !isborder(r, side)
+        move!(r, side)
+        putmarker!(r)
+    end
+end
+
+
+function moveBackwardAlongMarkers!(r::Robot, side::HorizonSide)
+    while ismarker(r)
+        move!(r, reversSide(side))
+    end
+end
+
+
 function krest!(r::Robot)
-    dic = [Nord, Ost, Sud, West]
-    
-    for i in 0:3
-        #c = i
-        while !isborder(r, HorizonSide(i))
-            move!(r, HorizonSide(i))
-            putmarker!(r)
-        end
-        while ismarker(r)
-            move!(r, HorizonSide((i+2)%4))
-        end
-        if i == 3
+    for side in instances(HorizonSide)
+        moveAndPut!(r, side)
+        moveBackwardAlongMarkers!(r, side)
+        if side == Ost
             putmarker!(r)
             break
         end
