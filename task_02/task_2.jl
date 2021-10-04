@@ -1,40 +1,17 @@
+include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
 
-function move_to_border!(r::Robot)
-    c = 0
-    while !isborder(r, HorizonSide(0))
-        move!(r, HorizonSide(0))
-        c+=1
-    end
-    return c
-end
 
-function move_backward!(r::Robot, c)
-    for i in 1:c
-        move!(r, HorizonSide(2))
-    end
-end
-
-function move_around!(r::Robot)
-    i = 1
-    while true
-        i = i%4
-        if ismarker(r)
-            break
-        end
-        while !isborder(r, HorizonSide(i%4))
-            if ismarker(r)
-                break
-            end
-            putmarker!(r)
-            move!(r, HorizonSide(i%4))
-        end
-        i += 1
+function moveAroundAndPut!(r::Robot)#, side::HorizonSide)
+    for side in instances(HorizonSide)
+        putmarker!(r)
+        moveAndPut!(r, side)
     end
 end
 
 
 function perimetr!(r::Robot)
-    count = move_to_border!(r)
-    move_around!(r)
-    move_backward!(r, count)
+    sides = moveAndReturnDirections!(r)
+    moveAroundAndPut!(r)
+    moveToStartplace!(r)
+    moveToBeginplace!(r, sides)
 end

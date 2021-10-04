@@ -1,12 +1,11 @@
 include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
 
 
-function moveAndPut!(r::Robot)
-    for i in 0:3
+function putmarkerInCorner!(r::Robot)
+    for side in instances(HorizonSide)
         putmarker!(r)
-        while !isborder(r, HorizonSide(i))
-            move!(r, HorizonSide(i))
-            
+        while !isborder(r, side)
+            move!(r, side)
         end
     end
 end
@@ -14,7 +13,7 @@ end
 
 function ugly!(r::Robot)
     sides = moveAndReturnDirections!(r)
-    moveAndPut!(r)
+    putmarkerInCorner!(r)
     moveToStartplace!(r)
     moveToBeginplace!(r, sides)
     

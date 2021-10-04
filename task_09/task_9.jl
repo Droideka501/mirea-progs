@@ -1,22 +1,28 @@
+function moveAndSearch!(r::Robot, side::HorizonSide, num::Integer)
+    for _ in 1:num
+        if ismarker(r)
+            return true
+            break
+        end
+        move!(r, side)
+    end
+    return false
+end
+
+
 function search_marker!(r::Robot)
-    check = false
-    side = 0
+    side = West
     counter = 1
-    c = 0
+    checker = false
     
-    while !check
-        for _ in 1:counter
-            if ismarker(r)
-                check = true
+    while !ismarker(r)
+        for _ in 1:2
+            checker = moveAndSearch!(r, side, counter)
+            if checker
                 break
             end
-            move!(r, HorizonSide(side)) 
+            side = nextSideConterclockwise(side)
         end
-        c+=1
-        side = (side+1) % 4
-        if c == 2
-            counter+=1
-            c = 0
-        end
+        counter+=1
     end
 end

@@ -1,15 +1,12 @@
+include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
+
 function search_out!(r::Robot)
-    side = 3
+    side = West
     counter = 1
 
-    while true
-        if !isborder(r, HorizonSide(0))
-            break
-        end
-        for _ in 1:counter
-            move!(r, HorizonSide(side))
-        end
-        side = (side+2)%4
+    while isborder(r, Nord)
+        moves!(r, side, counter)
+        side = reversSide(side)
         counter += 1
     end
 end

@@ -2,16 +2,16 @@ include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
 
 function moveToWall!(r::Robot)
     c = 0
-    while !isborder(r, HorizonSide(1))
+    while !isborder(r, West)
         putmarker!(r)
-        move!(r, HorizonSide(1))
+        move!(r, West)
         c+=1
     end
     putmarker!(r)
     return c
 end
 
-function moveAndPut!(r)
+function moveAndPuting!(r)
     c = moveToWall!(r)
     while c > 0
         if isborder(r, HorizonSide(0))
@@ -27,7 +27,7 @@ end
 
 function lestniza!(r::Robot)
     sides = moveAndReturnDirections!(r)
-    moveAndPut!(r)
+    moveAndPuting!(r)
     moveToStartplace!(r)
     moveToBeginplace!(r, sides)
 end
