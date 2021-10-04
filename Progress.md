@@ -1,5 +1,5 @@
 Процесс выполнения заданий:
-    :heavy_check_mark: ***Task_1*** completed, ready to check (changed)\n
+    :heavy_check_mark: ***Task_1*** completed, ready to check (changed)\\n
     :heavy_check_mark: ***Task_2*** completed, ready to check (changed).
     :heavy_check_mark: ***Task_3*** completed, ready to check (changed).
     :heavy_check_mark: ***Task_4*** completed, ready to check (changed).
