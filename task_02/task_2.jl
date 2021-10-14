@@ -4,7 +4,7 @@ include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
 function moveAroundAndPut!(r::Robot)#, side::HorizonSide)
     for side in instances(HorizonSide)
         putmarker!(r)
-        moveAndPut!(r, side)
+        marksLine!(r, side)
     end
 end
 

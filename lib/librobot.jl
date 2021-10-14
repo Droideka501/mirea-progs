@@ -20,17 +20,19 @@ function moves!(r::Robot, side::HorizonSide, number::Integer)::Nothing
     for _ in 1:number
         if !isborder(r, side)
             move!(r, side)
+        else 
+            break
         end
     end
 end
 
 
 """
-moves the robot in a `side` direction to the partition and checks if there is a partition in the Nord direction
+moves the robot in a `side` direction to the partition and checks if there is a partition in the `side_for_check` direction
 """
-function movesAndCheckNord!(r::Robot, side::HorizonSide)::Bool
+function movesAndCheck!(r::Robot, side::HorizonSide, side_for_check::HorizonSide)::Bool
     while !isborder(r, side)
-        if isborder(r, Nord)
+        if isborder(r, side_for_check)
             return true
         end
         move!(r, side)
@@ -55,7 +57,7 @@ end
 """
 moves the robot and put markers in a `side` direction to the partition
 """
-function moveAndPut!(r::Robot, side::HorizonSide)::Nothing
+function marksLine!(r::Robot, side::HorizonSide)::Nothing
     putmarker!(r)
     while !isborder(r, side)
         move!(r, side)
@@ -65,14 +67,19 @@ end
 
 
 """
-moves the robot and put markers in a `side` direction `number` of times
+moves the robot and put markers in a `side` direction `number` of times include start point\n
+returns the number of successful steps
 """
-function moveAndPut!(r::Robot, side::HorizonSide, number::Integer)::Nothing
+function marksLine!(r::Robot, side::HorizonSide, number::Integer)::Integer
     putmarker!(r)
-    for _ in 1:(number-1)
+    for i in 1:(number-1)
+        if isborder(r, side)
+            return i
+        end
         move!(r, side)
         putmarker!(r)
     end
+    return number
 end
 
 
@@ -181,29 +188,16 @@ end
 
 
 function marksArea!(r::Robot, size_of_area::Integer, side_begin::HorizonSide = West, side_end::HorizonSide = Nord)::Nothing
-    counter = 0
-
-    for i in 1:size_of_area
-        if counter == size_of_area
+    size = size_of_area
+    count = size
+    for n in 1:size
+        count = moveAndPut!(r, side_begin, count)
+        side_begin = reversSide(side_begin)
+        if !isborder(r, side_end)
+            move!(r, side_end)
+        else
             break
         end
-        for side in (side_begin, reversSide(side_begin))
-            if isborder(r, side_begin)
-                size_of_area = i
-                break
-            end
-            putmarker!(r)
-            moveAndPut!(r, side, size_of_area)
-            counter+=1
-            if counter == size_of_area
-                break
-            end
-            if isborder(r, side_end)
-                break
-            end
-            move!(r, side_end)
-        end
-        
     end
 end
 
@@ -213,6 +207,9 @@ moves the work on the markers in a `side` direction
 """
 function moveWhileMarker!(r::Robot, side::HorizonSide)::Nothing
     while ismarker(r)
+        if isborder(r, side)
+            break
+        end
         move!(r, side)
     end 
 end
@@ -261,10 +258,14 @@ function countingCoordinate(sides::Vector{HorizonSide})::Tuple{Integer, Integer}
     y = 0
     while length(arr)>0
         a = pop!(arr)
-        if a == Nord || a == Sud
+        if a == Sud
             y+=1
-        else
+        elseif a == Nord
+            y-=1
+        elseif a == Ost
             x+=1
+        else
+            x-=1
         end
     end
     return (x, y)

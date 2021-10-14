@@ -14,12 +14,12 @@ end
 function moveAndPuting!(r)
     c = moveToWall!(r)
     while c > 0
-        if isborder(r, HorizonSide(0))
+        if isborder(r, Nord)
             break
         end
-        move!(r, HorizonSide(0))
+        move!(r, Nord)
         for i in 1:c-1
-            move!(r, HorizonSide(3))
+            move!(r, Ost)
         end
         c = moveToWall!(r)
     end
