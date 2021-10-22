@@ -1,4 +1,4 @@
-include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
+include("..\\libs\\FunctionsRobot.jl")
 
 function chessMarkers!(r::Robot, number_of_steps::Integer)
     for side in (West, Ost)

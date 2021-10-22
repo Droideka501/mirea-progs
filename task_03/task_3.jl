@@ -1,5 +1,4 @@
-#include("D:\\Data\\Coding\\Julia\\mirea-progs\\fordebug.jl")
-include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
+include("..\\libs\\FunctionsRobot.jl")
 
 
 function zakrasit!(r::Robot)

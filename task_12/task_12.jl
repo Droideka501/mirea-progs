@@ -1,26 +1,14 @@
-include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
+include("..\\libs\\FunctionsRobot.jl")
 
-
-function moveToAnother!(r::Robot, N)
-    #for side in (Ost, West)
-        moveWhileMarker!(r, Nord)
-        moves!(r, Ost, N*2)
-    #end
-end
-
+robot = Robot(10, 10, animate = true)
 
 function modifyChess!(r::Robot, N::Integer)
-    sides = moveAndReturnDirections!(r, West, Nord)
-    marksArea!(r, N, Ost, Sud)
-    move!(r, Nord)
-    moveToAnother!(r, N)
-    marksArea!(r, N, Ost, Sud)
-    moves!(r, West, N)
-    marksArea!(r, N, Ost, Sud)
-    
-    #moveToStartplace!(r, West, Nord)
-    #moveToBeginplace!(r, sides)
+    back_path = BackPath(r, (Nord, West))
+    R = NChessRobot(r, Coords(0, 0), N)
+    marks!(R, (Sud, Ost))
+
+    back!(r, back_path)
 end
 
-        
+modifyChess!(robot, 3)        
 

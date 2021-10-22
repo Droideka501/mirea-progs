@@ -1,4 +1,4 @@
-include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
+include("..\\libs\\FunctionsRobot.jl")
 
 function perimetrAroundObject!(r::Robot, side)
     check = false

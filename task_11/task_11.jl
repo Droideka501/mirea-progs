@@ -1,4 +1,4 @@
-include("D:\\Data\\Coding\\Julia\\mirea-progs\\lib\\librobot.jl")
+include("..\\libs\\FunctionsRobot.jl")
 
 
 function putmarkersOpposite!(r::Robot, sides::Vector{HorizonSide})

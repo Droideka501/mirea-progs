@@ -12,5 +12,17 @@
     <p> :heavy_check_mark: ***Task_9*** completed, ready to check (changed) </p>
     <p> :heavy_check_mark: ***Task_10*** completed, ready to check (changed) </p>
     <p> :heavy_check_mark: ***Task_11*** completed, ready to check (changed) </p>
-    <p> :x: ***Task_12*** !completed, ready to check !(changed) </p>
+    <p> :heavy_check_mark: ***Task_12*** completed, ready to check (changed) </p>
     <p> :heavy_check_mark: ***Task_13*** completed, ready to check (changed) </p>
+    <p> :x: ***Task_14*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_15*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_16*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_17*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_18*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_19*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_20*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_21*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_22*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_23*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_24*** !completed, ready to check !(changed) </p>
+    <p> :x: ***Task_25*** !completed, ready to check !(changed) </p>
