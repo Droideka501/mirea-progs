@@ -1,9 +1,7 @@
 include("..\\libs\\FunctionsRobot.jl")
 
-"""
 
-"""
-function anyKrest!(r, dx::Integer = 1, dy::Integer = 1)
+function krestWithPartitions!(r, dx::Integer = 0, dy::Integer = 0)
 
     R = CrossRobot(r, Coords(0, 0), true, dx, dy)
     back_path = BackPath(R)

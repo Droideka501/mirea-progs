@@ -3,18 +3,36 @@ Library of custom function for HorizonSideRoots by Droideka501 \n
 link to repository https://github.com/Droideka501/mirea-progs
 """
 
-#import HorizonSideRobots
+using Revise
 using HorizonSideRobots
+import HorizonSideRobots: move!, isborder, ismarker, putmarker!, temperature, HorizonSide
 
 
 #------------------------------------------------------------#
 """
 Structs
+
+BackPath:
+|               back!(::AbstractRobot, ::BackPath)
+|               numSteps(::BackPath)
+
+Robot
+|
+|--AbstactRobot: 
+|               move!(::AbstractRobot, ::HorizonSide)
+|               isborder(::AbstractCoordRobot, ::HorizonSide)
+|               putmarker!(::AbstractCoordRobot)
+|               ismarker(::AbstractCoordRobot)
+|               temperature(::AbstractCoordRobot)
+|
+|
+
 """
 #------------------------------------------------------------#
 
 """
-
+moves the robot to `(side, side)` corner and create the array of direction\n
+default sides = (Sud, Ost)
 """
 struct BackPath
     sides::NTuple{2, HorizonSide}
@@ -22,7 +40,7 @@ struct BackPath
 
     function BackPath(robot, sides::NTuple{2,HorizonSide}=(Sud, Ost))
         local path=[]
-        while !HorizonSideRobots.isborder(robot, sides[1]) || !HorizonSideRobots.isborder(robot, sides[2])
+        while !isborder(robot, sides[1]) || !isborder(robot, sides[2])
             for s in sides 
                 
                 push!(path, movesAndCounting!(robot, s))
@@ -33,7 +51,7 @@ struct BackPath
 end
 
 """
-
+returns the number of steps taken by the robot
 """
 numSteps(back_path::BackPath)::Integer = sum(back_path.path)
 
@@ -48,10 +66,28 @@ function back!(robot, backpath::BackPath)
     end
 end
 
-#------------------------------------------------------------#
 
 """
 
+"""
+function get_xy(back_path::BackPath)
+    num_x, num_y = (0, 0)
+    for i in 1:length(back_path.path)
+        if iseven(i)
+            num_y += back_path.path[i]
+        else
+            num_x += back_path.path[i]
+        end
+    end
+    return (num_x, num_y)
+end
+
+
+#------------------------------------------------------------#
+
+"""
+coordinate structure\n
+includes a function for changing coordinates and getting a tuple of coordinates
 """
 mutable struct Coords
     x::Integer
@@ -60,8 +96,14 @@ mutable struct Coords
     Coords(x::Integer, y::Integer) = new(x, y)
 end
 
-get_coords(coord::Coords) = (coord.x, coord.y)
+"""
+returns tuple of coordinates 
+"""
+get_xy(coord::Coords) = (coord.x, coord.y)
 
+"""
+changes coordinates depending of `side`
+"""
 function move!(coord::Coords, side::HorizonSide)
     if side==Nord
         coord.y -= 1
@@ -74,30 +116,88 @@ function move!(coord::Coords, side::HorizonSide)
     end
 end
 
-
 #------------------------------------------------------------#
 
 """
-
+an abstract type of robot that is a wrapper for the type ::Robot
 """
 abstract type AbstractRobot end
 
-get(robot::AbstractRobot) = robot.robot
+"""
+returs the link to the robot\n
+typeof(get_robot(::AbstactRobot)) -> ::Robot
+"""
+get_robot(robot::AbstractRobot) = robot.robot
 
-move!(robot::AbstractRobot, side::HorizonSide) = HorizonSideRobots.move!(get(robot), side)
+"""
+returs the field coordinates of the robot\n
+if robot
+typeof(get_coords(::AbstactRobot)) -> ::Coords
+"""
+function get_coords(robot::AbstractRobot)
+    if :coords in fieldnames(typeof(robot))
+        return robot.coords
+    else
+        return error("This robot has not field coords")
+    end
+end
 
-isborder(robot::AbstractRobot,  side::HorizonSide) = HorizonSideRobots.isborder(get(robot), side)
+"""
+returs the field flag of the robot\n
+typeof(get_coords(::AbstactRobot)) -> ::Boll
+"""
+function get_flag(robot::AbstractRobot)
+    if :flag in fieldnames(typeof(robot))
+        return robot.flag
+    else
+        return error("This robot has not field flag")
+    end
+end
 
-putmarker!(robot::AbstractRobot) = HorizonSideRobots.putmarker!(get(robot))
+"""
+returs the field flag of the robot\n
+typeof(get_coords(::AbstactRobot)) -> ::Boll
+"""
+function get_number(robot::AbstractRobot)
+    if :number in fieldnames(typeof(robot))
+        return number.flag
+    else
+        return error("This robot has not field number")
+    end
+end
 
-ismarker(robot::AbstractRobot) = HorizonSideRobots.ismarker(get(robot))
+"""
+applies the function `move!` to the field `robot`
+"""
+move!(robot::AbstractRobot, side::HorizonSide) = HorizonSideRobots.move!(get_robot(robot), side)
 
-temperature(robot::AbstractRobot) = HorizonSideRobots.temperature(get(robot))
+"""
+applies the function `isborder` to the field `robot`
+"""
+isborder(robot::AbstractRobot,  side::HorizonSide) = HorizonSideRobots.isborder(get_robot(robot), side)
+
+"""
+applies the function `putmarker!` to the field `robot`
+
+"""
+putmarker!(robot::AbstractRobot) = HorizonSideRobots.putmarker!(get_robot(robot))
+
+"""
+applies the function `ismarker` to the field `robot`
+
+"""
+ismarker(robot::AbstractRobot) = HorizonSideRobots.ismarker(get_robot(robot))
+
+"""
+applies the function `temperature` to the field `robot`
+
+"""
+temperature(robot::AbstractRobot) = HorizonSideRobots.temperature(get_robot(robot))
 
 #------------------------------------------------------------#
 
 """
-
+robot with coordinates
 """
 mutable struct CoordsRobot <: AbstractRobot
     robot::Robot
@@ -105,36 +205,11 @@ mutable struct CoordsRobot <: AbstractRobot
     CoordsRobot(robot) = new(robot, Coords())
 end
 
-get(robot::CoordsRobot) = robot.robot
-
-get_coords(robot::CoordsRobot) = robot.coords
-
+"""
+moves the robot and coordinates to a `side` direction
+"""
 function move!(robot::CoordsRobot, side::HorizonSide)::Nothing
-    HorizonSideRobots.move!(get(robot), side)
-    move!(get_coords(robot), side)
-end
-
-#------------------------------------------------------------#
-
-"""
-
-"""
-abstract type AbstractCoordsRobot end
-
-get(robot::AbstractCoordsRobot) = robot.robot
-
-get_coords(robot::AbstractCoordsRobot) = robot.coords
-
-isborder(robot::AbstractCoordsRobot,  side::HorizonSide) = HorizonSideRobots.isborder(get(robot), side)
-
-putmarker!(robot::AbstractCoordsRobot) = HorizonSideRobots.putmarker!(get(robot))
-
-ismarker(robot::AbstractCoordsRobot) = HorizonSideRobots.ismarker(get(robot))
-
-temperature(robot::AbstractCoordsRobot) = HorizonSideRobots.temperature(get(robot))
-
-function move!(robot::AbstractCoordsRobot, side::HorizonSide)::Nothing
-    HorizonSideRobots.move!(get(robot), side)
+    move!(get_robot(robot), side)
     move!(get_coords(robot), side)
 end
 
@@ -148,21 +223,30 @@ mutable struct ChessRobot <: AbstractRobot
     flag::Bool
 end
 
-get(robot::ChessRobot) = robot.robot
-
-get_flag(robot::ChessRobot) = robot.flag
-
 function move!(robot::ChessRobot, side::HorizonSide) 
-    HorizonSideRobots.move!(get(robot), side)
+    move!(get_robot(robot), side)
     robot.flag = !get_flag(robot)
 end
 
 function putmarker!(robot::ChessRobot)
     if get_flag(robot)
-        HorizonSideRobots.putmarker!(get(robot))
+        putmarker!(get_robot(robot))
     end
 end
 
+
+
+#------------------------------------------------------------#
+
+"""
+
+"""
+abstract type AbstractCoordsRobot <: AbstractRobot end
+
+function move!(robot::AbstractCoordsRobot, side::HorizonSide)::Nothing
+    move!(get_robot(robot), side)
+    move!(get_coords(robot), side)
+end
 
 #------------------------------------------------------------#
 
@@ -175,23 +259,61 @@ mutable struct NChessRobot <: AbstractCoordsRobot
     number::Integer
 end
 
-get_number(robot::NChessRobot) = robot.number
-
-function move!(robot::NChessRobot, side::HorizonSide) 
-    HorizonSideRobots.move!(get(robot), side)
-    move!(get_coords(robot), side)
-end
-
 function putmarker!(robot::NChessRobot)
-    x, y = get_coords(get_coords(robot))
+    x, y = get_xy(get_coords(robot))
     x = x % (2*robot.number)
     y = y  % (2*robot.number)
-    if x in (0:robot.number-1) && y in (0:robot.number-1) || x in (robot.number:2*robot.number-1) && y in (robot.number:2*robot.number-1) 
-        HorizonSideRobots.putmarker!(get(robot))
+    if abs(x) in (0:robot.number-1) && abs(y) in (0:robot.number-1) || abs(x) in (robot.number:2*robot.number-1) && abs(y) in (robot.number:2*robot.number-1) 
+        putmarker!(get_robot(robot))
+    end
+end
+
+#------------------------------------------------------------#
+
+"""
+
+"""
+mutable struct CrossRobot <: AbstractCoordsRobot
+    robot::Robot
+    coords::Coords
+    flag::Bool
+    dx::Integer
+    dy::Integer
+    function CrossRobot(robot, coords::Coords, flag::Bool, dX::Integer, dY::Integer)
+        if dX == 0
+            dx = 0
+        else
+            dx = div(dX, gcd(dX, dY))
+        end
+        if dY == 0
+            dy = 0
+        else
+            dy = div(dY, gcd(dX, dY))
+        end
+        return new(robot, coords, flag, dx, dy)
     end
 end
 
 
+function move!(robot::CrossRobot, side::HorizonSide)
+    robot.flag = false
+    move!(get_robot(robot), side)
+    move!(get_coords(robot), side)
+    x, y = get_xy(get_coords(robot))
+    if robot.dx == 0 || robot.dy == 0
+        if x == 0 || y == 0
+            robot.flag = true
+        end
+    elseif y//1 == robot.dx//robot.dy * x || x//1 == -(robot.dx//robot.dy) * y
+        robot.flag = true
+    end
+end
+
+function putmarker!(robot::CrossRobot)
+    if get_flag(robot)
+        putmarker!(get_robot(robot))
+    end
+end
 
 #------------------------------------------------------------#
 """
@@ -205,8 +327,8 @@ Functions
 moves the robot in a `side` direction to the partition
 """
 function moves!(r, side::HorizonSide)::Nothing
-    while !HorizonSideRobots.isborder(r, side)
-        HorizonSideRobots.move!(r, side)
+    while !isborder(r, side)
+        move!(r, side)
     end
 end
 
@@ -216,8 +338,8 @@ moves the robot in a `side` direction `number` of times
 """
 function moves!(r, side::HorizonSide, number::Integer)::Nothing
     for _ in 1:number
-        if !HorizonSideRobots.isborder(r, side)
-            HorizonSideRobots.move!(r, side)
+        if !isborder(r, side)
+            move!(r, side)
         end
     end
 end
@@ -227,8 +349,8 @@ end
 moves the robot to `side_to_move` direction along partition in a `side_of_partition` direction
 """
 function movesAlong!(r, side_to_move::HorizonSide, side_of_partition::HorizonSide)::Nothing
-    while HorizonSideRobots.isborder(r, side_of_partition)
-        HorizonSideRobots.move!(r, side_to_move)
+    while isborder(r, side_of_partition)
+        move!(r, side_to_move)
     end
 end
 
@@ -238,11 +360,11 @@ moves the robot in a `side` direction to the partition and checks if there is a 
 returns `true` if there is a partition in the `side_for_check`, else `false`
 """
 function movesAndCheck!(r, side::HorizonSide, side_for_check::HorizonSide)::Bool
-    while !HorizonSideRobots.isborder(r, side)
-        if HorizonSideRobots.isborder(r, side_for_check)
+    while !isborder(r, side)
+        if isborder(r, side_for_check)
             return true
         end
-        HorizonSideRobots.move!(r, side)
+        move!(r, side)
     end
     return false
 end
@@ -254,10 +376,10 @@ returns `true` if there is a partition in the `side_for_check`, else `false`
 """
 function movesAndCheck!(r, side::HorizonSide, side_for_check::HorizonSide, number::Integer)::Bool
     for _ in 1:number
-        if HorizonSideRobots.isborder(r, side_for_check)
+        if isborder(r, side_for_check)
             return true
         end
-        HorizonSideRobots.move!(r, side)
+        move!(r, side)
     end
     return false
 end
@@ -268,8 +390,8 @@ moves the robot in a `side` direction to the partition and counting steps
 """
 function movesAndCounting!(r, side::HorizonSide)::Integer
     count = 0
-    while !HorizonSideRobots.isborder(r, side)
-        HorizonSideRobots.move!(r, side)
+    while !isborder(r, side)
+        move!(r, side)
         count+=1
     end
     return count
@@ -281,8 +403,7 @@ moves the robot and put markers in a `side` direction to the partition
 """
 function marksLine!(r, side::HorizonSide)::Nothing
     putmarker!(r)
-    while !isborder(r, side)
-        move!(r, side)
+    while tryToMove!(r, side)
         putmarker!(r)
     end
 end
@@ -295,10 +416,7 @@ returns the number of successful steps
 function marksLine!(r, side::HorizonSide, number::Integer)::Integer
     putmarker!(r)
     for i in 1:(number-1)
-        if isborder(r, side)
-            return i
-        end
-        move!(r, side)
+        tryToMove!(r, side)
         putmarker!(r)
     end
     return number
@@ -309,8 +427,8 @@ end
 moves the robot if possible in a `side` direction one of times
 """
 function oneStep!(r, side::HorizonSide)::Nothing
-    if !HorizonSideRobots.isborder(r, side)
-        HorizonSideRobots.move!(r, side)
+    if !isborder(r, side)
+        move!(r, side)
     end
 end
 
@@ -323,15 +441,15 @@ returns stack of directions
 function moveAndReturnDirections!(r, direction_by_x::HorizonSide = Ost, direction_by_y::HorizonSide = Sud)::Vector{HorizonSide}
     arr_of_direction::Vector{HorizonSide} = []
 
-    while !all(HorizonSideRobots.isborder(r, side) for side in (direction_by_x, direction_by_y))
+    while !all(isborder(r, side) for side in (direction_by_x, direction_by_y))
 
-        while !HorizonSideRobots.isborder(r, direction_by_x)
-            HorizonSideRobots.move!(r, direction_by_x)
+        while !isborder(r, direction_by_x)
+            move!(r, direction_by_x)
             push!(arr_of_direction, direction_by_x)
         end
 
-        while !HorizonSideRobots.isborder(r, direction_by_y)
-            HorizonSideRobots.move!(r, direction_by_y)
+        while !isborder(r, direction_by_y)
+            move!(r, direction_by_y)
             push!(arr_of_direction, direction_by_y)
         end
     end
@@ -344,7 +462,7 @@ moves the robot to a `direction_by_y`-`direction_by_x` angle\n
 default directions `(Ost, Sud)`\n
 """
 function moveToStartplace!(r, direction_by_x::HorizonSide = Ost, direction_by_y::HorizonSide = Sud)::Nothing
-    while !all(HorizonSideRobots.isborder(r, side) for side in (direction_by_x, direction_by_y))
+    while !all(isborder(r, side) for side in (direction_by_x, direction_by_y))
         moves!(r, direction_by_x)
         moves!(r, direction_by_y)
     end
@@ -364,7 +482,7 @@ moves the robot to the start of the program
 """
 function moveToBeginplace!(r, stack_of_direction::Vector{HorizonSide})::Nothing
     while length(stack_of_direction) > 0
-        HorizonSideRobots.move!(r, reversSide(pop!(stack_of_direction)))
+        move!(r, reversSide(pop!(stack_of_direction)))
     end
 end
 
@@ -397,13 +515,13 @@ function marksArea!(r, side_begin::HorizonSide = West, side_end::HorizonSide = N
 
     while !checker
         for side in (side_begin, reversSide(side_begin)) 
-            HorizonSideRobots.putmarker!(r)
+            putmarker!(r)
             moveAndPut!(r, side)
-            if HorizonSideRobots.isborder(r, side_end)
+            if isborder(r, side_end)
                 checker = true
                 break
             end
-            HorizonSideRobots.move!(r, side_end)
+            move!(r, side_end)
         end
     end
 end
@@ -415,8 +533,8 @@ function marksArea!(r, size_of_area::Integer, side_begin::HorizonSide = West, si
     for n in 1:size
         count = moveAndPut!(r, side_begin, count)
         side_begin = reversSide(side_begin)
-        if !HorizonSideRobots.isborder(r, side_end)
-            HorizonSideRobots.move!(r, side_end)
+        if !isborder(r, side_end)
+            move!(r, side_end)
         else
             break
         end
@@ -428,11 +546,11 @@ end
 moves the work on the markers in a `side` direction
 """
 function moveWhileMarker!(r, side::HorizonSide)::Nothing
-    while HorizonSideRobots.ismarker(r)
-        if HorizonSideRobots.isborder(r, side)
+    while ismarker(r)
+        if isborder(r, side)
             break
         end
-        HorizonSideRobots.move!(r, side)
+        move!(r, side)
     end 
 end
 
@@ -449,16 +567,16 @@ function searchObject!(r, side_begin::HorizonSide = West, side_end::HorizonSide 
     while !checker
         for side in instances(HorizonSide)
             for _ in 1:counter
-                if HorizonSideRobots.isborder(r, nextSideConterclockwise(side))
+                if isborder(r, nextSideConterclockwise(side))
                     checker = true
                     break
                 end
-                if HorizonSideRobots.isborder(r, side)
+                if isborder(r, side)
                     checker = true
                     side = nextSideClockwise(side)
                     break
                 end
-                HorizonSideRobots.move!(r, side)
+                move!(r, side)
             end
 
             if checker
@@ -524,20 +642,20 @@ function tryMove!(r, side_to_try::HorizonSide = Ost)
     partition = true
     counter = 0
 
-    if HorizonSideRobots.isborder(r, side_to_move) && HorizonSideRobots.isborder(r, side_to_try)
+    if isborder(r, side_to_move) && isborder(r, side_to_try)
         side_to_move = reversSide(side_to_move)
     end
 
     while partition
-        if HorizonSideRobots.isborder(r, side_to_try)
+        if isborder(r, side_to_try)
             partition = true
-            tryHorizonSideRobots.Move!(r, side_to_move)
+            tryMove!(r, side_to_move)
             counter += 1
         else
             partition = false
-            HorizonSideRobots.move!(r, side_to_try)
+            move!(r, side_to_try)
             for _ in 1:counter
-                tryHorizonSideRobots.Move!(r, reversSide(side_to_move))
+                tryMove!(r, reversSide(side_to_move))
             end
         end  
     end
@@ -555,19 +673,25 @@ function tryToMoveConterclockwise!(r, side_to_try::HorizonSide)::Bool
     side_to_move = nextSideClockwise(side_to_try)
     counter = 0
     partition = true
+
+    if !isborder(r, side_to_try)
+        move!(r, side_to_try)
+        return true
+    end
+    
     while partition
 
-        if HorizonSideRobots.isborder(r, side_to_move) && HorizonSideRobots.isborder(r, side_to_try)
+        if isborder(r, side_to_move) && isborder(r, side_to_try)
             moves!(r, reversSide(side_to_move), counter)
             return false
         end
-        if HorizonSideRobots.isborder(r, side_to_try)
+        if isborder(r, side_to_try)
             partition = true
-            HorizonSideRobots.move!(r, side_to_move)
+            move!(r, side_to_move)
             counter += 1
         else
             partition = false
-            HorizonSideRobots.move!(r, side_to_try)
+            move!(r, side_to_try)
             movesAlong!(r, side_to_try, reversSide(side_to_move))
             moves!(r, reversSide(side_to_move), counter)
             return true
@@ -587,19 +711,24 @@ function tryToMoveClockwise!(r, side_to_try::HorizonSide)::Bool
     counter = 0
     partition = true
 
+    if !isborder(r, side_to_try)
+        move!(r, side_to_try)
+        return true
+    end
+
     while partition
 
-        if HorizonSideRobots.isborder(r, side_to_move) && HorizonSideRobots.isborder(r, side_to_try)
+        if isborder(r, side_to_move) && isborder(r, side_to_try)
             moves!(r, reversSide(side_to_move), counter)
             return false
         end
-        if HorizonSideRobots.isborder(r, side_to_try)
+        if isborder(r, side_to_try)
             partition = true
-            HorizonSideRobots.move!(r, side_to_move)
+            move!(r, side_to_move)
             counter += 1
         else
             partition = false
-            HorizonSideRobots.move!(r, side_to_try)
+            move!(r, side_to_try)
             movesAlong!(r, side_to_try, reversSide(side_to_move))
             moves!(r, reversSide(side_to_move), counter)
             return true
@@ -607,26 +736,10 @@ function tryToMoveClockwise!(r, side_to_try::HorizonSide)::Bool
     end
 end
 
-#Часть от tryToMoveClockwise! и tryToMoveConterclockwise! для пересекающихся перегород
-#Надо доделать
-"""
-    steps = 0
-    while steps != counter
-        if HorizonSideRobots.isborder(r, reversSide(side_to_move))
-            moves!(r, side_to_move, steps)
-            HorizonSideRobots.move!(r, reversSide(side_to_try))
-            moves!(r, reversSide(side_to_move), counter)
-            return false
-        end
-        HorizonSideRobots.move!(r, reversSide(side_to_move))
-        steps+=1
-    end
-    return true
-"""
-
 
 """
-
+trying to trying to move to `side_to_try` direction\n
+if the partition cannot be bypassed returns false
 """
 function tryToMove!(r, side_to_try::HorizonSide)
     checker = false
@@ -642,19 +755,14 @@ end
 """
 marks the field in the specified order depending on the type of `robot`
 """
-function marks!(r::Union{Robot, AbstractRobot, AbstractCoordsRobot}, sides::NTuple{2, HorizonSide} = (Nord, West))::Nothing
+function marks!(r::Union{Robot, AbstractRobot}, sides::NTuple{2, HorizonSide} = (Nord, West))::Nothing
     side_to_move = sides[1]
     side_to_marks = sides[2]
-    flag = true
 
     marksLine!(r, side_to_marks)
     while !isborder(r, side_to_move)
-        move!(r, side_to_move)
-        if isa(flag, typeof(r))
-            flag = !get_falg(r)
-        end
+        tryToMove!(r, side_to_move)
         side_to_marks = reversSide(side_to_marks)
         marksLine!(r, side_to_marks)
     end
 end
-
