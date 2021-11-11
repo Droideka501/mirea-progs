@@ -208,7 +208,7 @@ end
 """
 moves the robot and coordinates to a `side` direction
 """
-function move!(robot::CoordsRobot, side::HorizonSide)::Nothing
+function move!(robot::CoordsRobot, side::HorizonSide)
     move!(get_robot(robot), side)
     move!(get_coords(robot), side)
 end
@@ -243,7 +243,7 @@ end
 """
 abstract type AbstractCoordsRobot <: AbstractRobot end
 
-function move!(robot::AbstractCoordsRobot, side::HorizonSide)::Nothing
+function move!(robot::AbstractCoordsRobot, side::HorizonSide)
     move!(get_robot(robot), side)
     move!(get_coords(robot), side)
 end
@@ -336,12 +336,17 @@ end
 """
 moves the robot in a `side` direction `number` of times
 """
-function moves!(r, side::HorizonSide, number::Integer)::Nothing
+function moves!(r, side::HorizonSide, number::Integer)
+    counter = 0
     for _ in 1:number
         if !isborder(r, side)
             move!(r, side)
+            counter += 1
+        else
+            return number - counter
         end
     end
+    return 0
 end
 
 
@@ -755,7 +760,7 @@ end
 """
 marks the field in the specified order depending on the type of `robot`
 """
-function marks!(r::Union{Robot, AbstractRobot}, sides::NTuple{2, HorizonSide} = (Nord, West))::Nothing
+function marks!(r, sides::NTuple{2, HorizonSide} = (Nord, West))::Nothing
     side_to_move = sides[1]
     side_to_marks = sides[2]
 
@@ -764,5 +769,65 @@ function marks!(r::Union{Robot, AbstractRobot}, sides::NTuple{2, HorizonSide} = 
         tryToMove!(r, side_to_move)
         side_to_marks = reversSide(side_to_marks)
         marksLine!(r, side_to_marks)
+    end
+end
+
+
+"""
+
+"""
+function tryToMoveModify!(r, side_to_try::HorizonSide)::Bool
+    side_to_move = nextSideConterclockwise(side_to_try)
+    steps = 1
+
+    while isborder(r, side_to_try)
+        side_to_move = reversSide(side_to_move)
+        if moves!(r, side_to_move, steps) != 0
+            moves!(r, reversSide(side_to_move), div(steps, 2))
+            return false
+        end
+        steps += 1
+    end
+
+    move!(r, side_to_try)
+
+    while isborder(r, reversSide(side_to_move))
+        move!(r, side_to_try)
+    end
+
+    moves!(r, reversSide(side_to_move), div(steps, 2))
+    return true
+end
+
+
+"""
+
+"""
+function movements!(r, side::HorizonSide)
+    while tryToMoveModify!(r, side) end
+end
+
+"""
+
+"""
+function movements!(r, side::HorizonSide, number::Integer)
+    for _ in 1:number 
+        tryToMoveModify!(r, side)
+    end
+end
+
+
+"""
+
+"""
+function spiralBypass!(condition::Function, r::AbstractCoordsRobot)
+    counter = 1
+    side = HorizonSide(0)
+    while !condition(r)
+        moves!(r, side, counter)
+        if Int(side) == 1 || Int(side) == 3
+            counter+=1
+        end
+        side = nextSideConterclockwise(side)
     end
 end

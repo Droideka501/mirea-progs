@@ -2,7 +2,7 @@ include("..\\libs\\FunctionsRobot.jl")
 
 function putmarker!(robot::CoordsRobot)
     x, y = get_xy(get_coords(robot))
-    if x + y <= 0
+    if x - y <= 0
         putmarker!(get_robot(robot))
     end
 end
