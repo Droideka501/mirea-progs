@@ -20,8 +20,8 @@
     <p> :heavy_check_mark: ***Task_17*** completed, ready to check (changed) </p>
     <p> :heavy_check_mark: ***Task_18*** completed, ready to check (changed) </p>
     <p> :x: ***Task_19*** !completed, ready to check !(changed) </p>
-    <p> :x: ***Task_20*** !completed, ready to check !(changed) </p>
-    <p> :x: ***Task_21*** !completed, ready to check !(changed) </p>
+    <p> :heavy_check_mark: ***Task_20*** completed, ready to check !(changed) </p>
+    <p> :heavy_check_mark: ***Task_21*** completed, ready to check !(changed) </p>
     <p> :x: ***Task_22*** !completed, ready to check !(changed) </p>
     <p> :x: ***Task_23*** !completed, ready to check !(changed) </p>
     <p> :x: ***Task_24*** !completed, ready to check !(changed) </p>
