@@ -42,7 +42,6 @@ struct BackPath
         local path=[]
         while !isborder(robot, sides[1]) || !isborder(robot, sides[2])
             for s in sides 
-                
                 push!(path, movesAndCounting!(robot, s))
             end
         end
@@ -830,4 +829,23 @@ function spiralBypass!(condition::Function, r::AbstractCoordsRobot)
         end
         side = nextSideConterclockwise(side)
     end
+end
+
+
+"""
+
+"""
+function counterPartition!(r::Robot, side_to_move::HorizonSide = Ost)
+    counter = 0
+    while !isborder(r, nextSideConterclockwise(side_to_move))
+        while tryToMove!(r, side_to_move)
+            if isborder(r, nextSideConterclockwise(side_to_move))
+                movesAlong!(r, side_to_move, nextSideConterclockwise(side_to_move))
+                counter+=1
+            end
+        end
+        while tryToMove!(r, reversSide(side_to_move)) end
+        move!(r, nextSideConterclockwise(side_to_move))
+    end
+    return counter
 end
