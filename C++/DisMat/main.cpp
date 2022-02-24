@@ -3,32 +3,36 @@
 
 int main()
 {
-    int n;
-    std::cin >> n;
-    std::vector <std::vector <int>> roads(n, std::vector<int>(n)); 
+    int n, m;
+    std::cin >> n >> m;
+    std::vector <std::vector <int>> roads(n, std::vector<int>(m)); 
 
     int min_costs_counter = 10000;
  
     for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            std::cin >> roads[i][j];
+        for(int j = 0; j < m; j++){
+            roads[i][j] == 0;
         }
     }
 
-    for(int i = 0; i < n; i++){
-        roads[i][i] = 10000;
+
+    int t;
+    std::cin >> t;
+    for(int i = 0; i < t; i++)
+    {
+        int x, y;
+        std::cin >> x >> y;
+        roads[x][y] = 1;
     }
 
     for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
-            for(int k = 1; k < n; k++){
-                int temp = roads[i][j] + roads[(i+k)%n][j] + roads[(i+k)%n][i];
-                if (temp < min_costs_counter) min_costs_counter = temp;
-            }
+        for(int j = 0; j < m; j++){
+            std::cout << roads[i][j] << " ";
         }
+        std::cout << "\n";
     }
 
-    std::cout << min_costs_counter;
+    
 }
 
 
