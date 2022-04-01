@@ -1,59 +1,41 @@
-#include <iostream>
+//#include <iostream>
+#include "DisMath.h"
+#include <cmath>
 #include <vector>
+#include <set>
 
+const int MOD = 1e9 + 7;
+ 
 int main()
 {
-    int n, m;
-    std::cin >> n >> m;
-    std::vector <std::vector <int>> roads(n, std::vector<int>(m)); 
+    int n, n1, n2;
+    std::cin >> n >> n1 >> n2;
 
-    int min_costs_counter = 10000;
- 
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < m; j++){
-            roads[i][j] == 0;
-        }
+    std::vector <int> tree(n+1);
+    tree[1] = 0;
+    for(int i = 2; i < n+1; i++){
+        std::cin >> tree[i];
     }
 
+    std::set<int> checker;
 
-    int t;
-    std::cin >> t;
-    for(int i = 0; i < t; i++)
-    {
-        int x, y;
-        std::cin >> x >> y;
-        roads[x][y] = 1;
+    checker.insert(n1);
+    while(tree[n1]){
+        checker.insert(tree[n1]);
+        n1 = tree[n1];
     }
-
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < m; j++){
-            std::cout << roads[i][j] << " ";
-        }
-        std::cout << "\n";
-    }
-
     
+    if(checker.count(n2)){
+        std::cout << n2;
+        return 0;
+    }
+    
+    while(tree[n2]){
+        int t = tree[n2];
+        if(checker.count(t)){
+            std::cout << tree[n2];
+            return 0;
+        }
+        n2 = tree[n2];
+    }
 }
-
-
- /*
-    for(int i = 0; i < n; i++){
-        int min_1 = 1000;
-        int iter1 = 0;
-        for(int j = 0; j < n; j++){
-            if (roads[i][j] < min_1 && roads[i][j] != 0){
-                min_1 = roads[i][j];
-                iter1 = j;
-            }
-        }
-        int min_2 = 1000;
-        int iter2 = 0;
-        for(int j = 0; j < n; j++){
-            if (roads[j][iter1] < min_2 && roads[j][iter1] != 0 && roads[j][iter1] != min_1){
-                min_2 = roads[j][iter1];
-                iter2 = j;
-            }
-        }
-        int temp = min_1 + min_2 + roads[i][iter2];
-        if (temp < min_costs_counter) min_costs_counter = temp;
-    }*/
