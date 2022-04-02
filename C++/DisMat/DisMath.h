@@ -1,6 +1,8 @@
 #include <cmath>
 #include <vector>
 #include <iostream>
+#include <stack>
+#include <queue>
 
 
 long long gcd(long long a, long long b)
@@ -122,4 +124,45 @@ void idempotents(long long p)
         }
     }
     if(checker) std::cout << -1;
+}
+
+void DFS(int start, std::vector<std::vector <int>>& edges, std::vector<bool>& mark)
+{
+    std::stack<int> s;
+    s.push(start);
+    while (!s.empty())
+    {
+        int v = s.top();
+        s.pop();
+        for (int i = 0; i < edges[v].size(); ++i)
+        {
+            if (mark[edges[v][i]] == 0)
+            {
+                s.push(edges[v][i]);
+                mark[edges[v][i]] = 1;
+            }
+        }
+    }
+}
+
+void BFS(int start, std::vector<std::vector <int>>& edges, std::vector<bool>& mark, std::vector<int>& d)
+{
+    std::queue<int> q;
+    q.push(start);
+    d[start] = 0;
+    mark[start] = 1;
+    while (!q.empty())
+    {
+        int v = q.front();
+        q.pop();
+        for (int i = 0; i < edges[v].size(); ++i)
+        {
+            if (mark[edges[v][i]] == 0)
+            {
+                d[edges[v][i]] = d[v] + 1;
+                mark[edges[v][i]] = 1;
+                q.push(edges[v][i]);
+            }
+        }
+    }
 }

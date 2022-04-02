@@ -319,37 +319,29 @@ void swapInArray(double* arr, int indexLeft, int indexRight)
 
 int main()
 {
-    /*
-	MyArrayChild* arr;
-	MySortedArray ptr;
-	arr = &ptr;
-
-	if (true)
-	{
-		int i = 0;
-		for (i = 0; i < 10; i++)
-		{
-			arr->push(i + 1);
-		}
-		arr->print();
-		cout << "\n";
-		cout << arr->IndexOf(1) << "\n";
-	}
-	return 0;*/
     
-    MyArrayChild arr;
+	MyArrayParent* arr;
+	//указатель тепа child
+	MySortedArray ptr;
+	//объект типа sorted
+	arr = &ptr;
+	//указателю присвоили ссылку на объект
 
-    for(int i = 10; i >= 0; i--)
-    {
-        std::cout << i << " ";
-        arr.push(-i);
-    }
-
-    arr.print();
-	arr.RemoveAt(3);
-	arr.print();
-
-
+	int i = 0;
+	for (i = 9; i >= 0; i--)
+	{
+		arr->push(i + 1);
+	}
+	arr->print();
+	MySortedArray A;
+	for (i = 9; i >= 0; i--)
+	{
+		A.push(i + 1);
+	}
+	A.print();
+	cout << "\n";
+	//cout << arr->IndexOf(1) << "\n";
+	return 0;
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
