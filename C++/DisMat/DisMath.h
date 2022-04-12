@@ -1,9 +1,6 @@
-#include <cmath>
-#include <vector>
-#include <iostream>
-#include <stack>
-#include <queue>
+#include "Tools.h"
 
+const int MOD = 1e9 + 7;
 
 long long gcd(long long a, long long b)
 {
@@ -130,6 +127,7 @@ void DFS(int start, std::vector<std::vector <int>>& edges, std::vector<bool>& ma
 {
     std::stack<int> s;
     s.push(start);
+    mark[start] = 1;
     while (!s.empty())
     {
         int v = s.top();

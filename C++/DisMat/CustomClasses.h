@@ -1,14 +1,11 @@
+
+
 class Pair{
     private:
         int x;
         int y;
     public:
-        Pair(){
-            x = 0;
-            y = 0;
-        }
-
-        Pair(int X, int Y){
+        Pair(int X = 0, int Y = 0){
             x = X;
             y = Y;
         }
@@ -20,10 +17,5 @@ class Pair{
 
         int getX(){ return x; }
         int getY(){ return y; }
-        
-        bool operator==(const Pair& P){
-            if(x == P.x && y == P.y || x == P.y && y == P.x)
-                return true;
-            return false;
-        }
+        bool operator==(const Pair& P){ return (x == P.x && y == P.y || x == P.y && y == P.x); }
 };

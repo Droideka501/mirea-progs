@@ -70,7 +70,7 @@ public:
 
 	int Length() {return len;}
 	int Capacity() { return capacity; }
-	//char* get() {return p;}
+	char* get() {return p;}
 	char& operator[](int i) {return p[i];}
 
     BaseString& operator=(const BaseString& s){
@@ -94,7 +94,6 @@ public:
         for(int i = len; i < res.len; i++){
             res.p[i] = s.p[i-len];
         }
-        std::cout << "\n capasity: " << res.capacity << "\n len: " << res.len << "\n";
         return res;
     }
 
@@ -107,6 +106,18 @@ public:
 			i++;
 		}
 	}
+
+    virtual bool IsPolindrom(){
+        int j = len-1;
+        for(int i = 0; i < len/2; i++){
+            if(p[i] == p[j]){
+                j--;
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
 };
 
 
@@ -132,7 +143,7 @@ class String : public BaseString
 
         int IndexOf(char c)
         {
-            for(int i = len-1; i > 0; i--){
+            for(int i = len-1; i >= 0; i--){
                 if(p[i] == c){
                     return i;
                 }
@@ -145,20 +156,24 @@ int main()
 {
 	if (true)
 	{
-		BaseString s("test");
+		BaseString s("teset");
+        std::cout << s.IsPolindrom() << std::endl;
 		//s.print();
 		BaseString s1 = s;
 		//s1.print();
-        std::cout<< "\n";
 		BaseString s2;
 		s2 = s + s1;    
 		//s2 = s + s1;
 		s2.print();
+        std::cout<< "\n";
 
-        String str("test");
+        String str(s.get());
+        str.print();
+        std::cout << "\n";
+        String st("sadsasd");
+        str = st;
         std::cout << str.IndexOf('s');
 		//s1 = s2 + s;
-		//s1.print();
 	}
 	return 0;
 }
