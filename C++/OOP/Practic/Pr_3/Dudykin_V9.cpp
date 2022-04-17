@@ -66,7 +66,7 @@ protected:
     int c1;
 
 public:
-    C1(int V1 = 0, int V2 = 0, int V3 = 0, int V4 = 0) : B1(V2), B2(V3), B3(V4)
+    C1(int V1 = 0, int V2 = 0, int V3 = 0, int V4 = 0, int V5 = 0) : B1(V2, V5), B2(V3, V5), B3(V4, V5)
     {
         c1 = V1;
         std::cout << "\nClass C1 constructor";
@@ -81,7 +81,7 @@ protected:
     int c2;
 
 public:
-    C2(int V1 = 0, int V2 = 0, int V3 = 0, int V4 = 0) : B1(V2), B2(V3), B3(V4)
+    C2(int V1 = 0, int V2 = 0, int V3 = 0, int V4 = 0, int V5 = 0) : B1(V2, V5), B2(V3, V5), B3(V4, V5)
     {
         c2 = V1;
         std::cout << "\nClass C2 constructor";
@@ -92,7 +92,7 @@ public:
 
 int main()
 {
-    C1 test_1(2, 1, 3, 1);
+    C1 test_1(2, 1, 3, 1, 4);
     test_1.show();
     test_1.print();
     A1 *ptr = &test_1;

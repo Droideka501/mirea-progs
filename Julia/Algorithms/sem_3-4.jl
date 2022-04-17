@@ -1,12 +1,12 @@
 
-
+"""Перестановка двух элементов"""
 function swap!(array::AbstractVector, i, j)
     temp = array[i]
     array[i] = array[j]
     array[j] = temp
 end
 
-
+"""Сортировка вставками"""
 function insertionSort!(array::AbstractVector)
     for i in 2:length(array)
         for j in i-1:-1:1
@@ -17,6 +17,7 @@ function insertionSort!(array::AbstractVector)
     end
 end
 
+"""Сортировка Шелла"""
 #function shellSort!(array::AbstractVector)
 #    gap = length(array)
 #    while gap > 0
@@ -27,6 +28,7 @@ end
 #    end
 #end
 
+"""Сортировка Шелла более оптимизированная"""
 function shellSort!(array::AbstractVector)
     gap = length(array)
     while gap > 0
@@ -41,7 +43,7 @@ function shellSort!(array::AbstractVector)
     end
 end
 
-
+"""Поиск всех максимальных значений массива"""
 function findAllMax(array::AbstractVector)
     index_max = Vector{Int}(undef, length(array))
     index_max[begin] = firstindex(array)
@@ -58,6 +60,7 @@ function findAllMax(array::AbstractVector)
     return index_max[1:j]
 end
 
+"""Сортировка пузырьком (последние i элементов всегда будут отсортированы, поэтому вложенный цикл до len - i элементов)"""
 function bubbleSortModF!(array::AbstractVector)
     for i in 1:length(array)
         for j in 1:length(array)-i
@@ -68,6 +71,8 @@ function bubbleSortModF!(array::AbstractVector)
     end
 end
 
+
+"""Сортировка пузырьком (двухсторонняя)"""
 function bubbleSortModS!(array::AbstractVector)
     counter = 0
     start = 2
@@ -98,6 +103,8 @@ function bubbleSortModS!(array::AbstractVector)
     end
 end
 
+
+"""Реализация среза"""
 function slice(A::AbstractVector, p::AbstractVector{<:Integer})
     temp = typeof(A)()
     for i in p
@@ -106,6 +113,7 @@ function slice(A::AbstractVector, p::AbstractVector{<:Integer})
     return temp
 end
 
+"""Перестановки с негативом изначального массива"""
 function permute_!(A::AbstractVector, perm::AbstractVector{<:Integer})
     first = 1
     itr_up = first
@@ -129,7 +137,83 @@ function permute_!(A::AbstractVector, perm::AbstractVector{<:Integer})
     end
 end
 
-function insertAt!(A::AbstractVector, index::Integer)
-    
+"""Вставка элемента в массив по индексу"""
+function insertAt!(A::AbstractVector, index::Integer, value::Real)
+    push!(A, value)
+    for i in length(A):-1:index+1
+        swap!(A, i, i-1)
+    end
+    return A
+end
 
+""""""
+function deleteAt!(A::AbstractVector, index::Integer)
+    for i in index:length(A)-1
+        swap!(A, i, i+1)
+    end
+    pop!(A)
+    return A
+end
 
+""""""
+function unique_(A::AbstractVector)
+    B = []
+    sort!(A)
+    push!(B, A[1])
+    for i in 2:lenght(A)
+        if A[i] != A[i-1]
+            push!(B, A[i])
+        end
+    end
+    return B
+end
+
+""""""
+function unique_!(A::AbstractVector)
+    sort!(A)
+    for i in 2:lenght(A)
+        if A[i] == A[i-1]
+            deleteAt!(A, i)
+        end
+    end
+    return A
+end
+
+""""""
+function AllUnique_(A::AbstractVector)
+    sort!(A)
+    for i in 2:lenght(A)
+        if A[i] == A[i-1]
+            return false
+        end
+    end
+    return true
+end
+
+""""""
+function Reverse!(A::AbstractVector, k::Integer = 0)
+    for i in 1:div(length(A)-k, 2)
+        swap!(A, i, length(A)-i+1)
+    end
+    return A
+end
+
+""""""
+function circleShift!(A::AbstractVector, k::Integer)
+    k = k%length(A)
+    Reverse!(A)
+    Reverse!(@view A[begin:k])
+    Reverse!(@view A[begin+k:end])
+
+    return A
+end
+
+""""""
+function transposeFirstMod!(A::AbstractMatrix)
+    for i in 1:lenght(A[1])
+        temp = deepcopy(A[i, :])
+        A[i, :] = deepcopy(A[:, i])
+        A[:, i] = temp
+    end
+    return A
+end
