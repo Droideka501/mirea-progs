@@ -112,7 +112,7 @@ class Stack : public LinkedList<T>
 {
 public:
     Stack() : LinkedList<T>() {}
-
+    virtual ~Stack() {}
 
     virtual Element<T> *pop()
     {
