@@ -59,12 +59,3 @@ int main()
     std::cout << "YES";
     return 0;
 }
-
-/*----------------------------------------------------------------
-for(int i = 0; i < edges.size(); i++){
-        for(int j = 0; j <edges[i].size(); j++){
-            std::cout << edges[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
-*/

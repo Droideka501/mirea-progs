@@ -79,6 +79,7 @@ public:
 
     BaseString &operator=(const BaseString &s)
     {
+        delete[] p;
         capacity = s.capacity;
         p = new char[capacity];
         len = s.len;

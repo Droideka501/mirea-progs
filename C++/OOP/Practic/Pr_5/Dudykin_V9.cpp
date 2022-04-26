@@ -125,11 +125,11 @@ public:
         }
     }
 
-    friend ostream& operator<<(ostream &s, BaseMatrix &M);
-    friend istream& operator>>(istream &s, BaseMatrix &M);
+    friend ostream &operator<<(ostream &s, BaseMatrix &M);
+    friend istream &operator>>(istream &s, BaseMatrix &M);
 };
 
-ostream& operator<<(ostream &s, BaseMatrix &M)
+ostream &operator<<(ostream &s, BaseMatrix &M)
 {
     if (typeid(s) == typeid(ofstream))
     {
@@ -156,9 +156,9 @@ ostream& operator<<(ostream &s, BaseMatrix &M)
     return s;
 }
 
-istream& operator>>(istream &s, BaseMatrix &M)
+istream &operator>>(istream &s, BaseMatrix &M)
 {
-    if (typeid(s) == typeid(ofstream))
+    if (typeid(s) == typeid(ifstream))
     {
         int h, w;
         s >> h >> w;
@@ -190,10 +190,66 @@ istream& operator>>(istream &s, BaseMatrix &M)
     return s;
 }
 
-ostream& manipV9(ostream& s)
+ostream &manipV9(ostream &s)
 {
     s.setf(ios_base::scientific);
     return s;
+}
+
+class Matrix : public BaseMatrix
+{
+public:
+    Matrix(int Height = 2, int Width = 2) : BaseMatrix(Height, Width) {}
+    Matrix(const Matrix &M)
+    {
+        if (ptr != NULL)
+        {
+            for (int i = 0; i < height; i++)
+                delete[] ptr[i];
+            delete[] ptr;
+            ptr = NULL;
+        }
+        else
+        {
+            height = M.height;
+            width = M.width;
+            ptr = new double *[height];
+            for (int i = 0; i < height; i++)
+            {
+                ptr[i] = new double[width];
+                for (int j = 0; j < width; j++)
+                    ptr[i][j] = M.ptr[i][j];
+            }
+        }
+    }
+    ~Matrix() {}
+
+    void generateRandMatrix(int max_rand = 100)
+    {
+        srand(time(0));
+        for(int i = 0; i < height; i++)
+        {        
+            for(int j = 0; j < width; j++)
+            {
+                ptr[i][j] = rand() % max_rand;
+            }
+        }
+    }
+    friend void geometricMeanOfRows(vector<double>& v, Matrix& M);
+
+};
+
+void geometricMeanOfRows(vector<double>& v, Matrix& M)
+{
+    for(int i = 0; i < M.height; i++)
+    {
+        double gm = 1;
+        for(int j = 0; j < M.width; j++)
+        {
+            gm *= sqrt(M.ptr[i][j]);
+        }
+        v.push_back(gm);
+    }
 }
 
 int main()
@@ -202,26 +258,39 @@ int main()
     {
         BaseMatrix M1, M2(2, 3), M;
         //M = +M2;
-        cin >> M2;
-        M1.print();
+        //cin >> M2;
+        //M1.print();
 
+        Matrix m(2, 2);
+        vector <double> v;
+        m.generateRandMatrix();
+        cout << m;
+        geometricMeanOfRows(v, m);
+        for(int i = 0; i < v.size(); i++)
+        {
+            cout << v[i] << " ";
+        }
+        cout << endl;
+
+        
         ofstream fout("text.txt");
 
-        if(fout.is_open())
+        if (fout.is_open())
         {
-            fout << M2;
+            fout << m;
             fout.close();
         }
 
         ifstream fin;
         fin.open("text.txt");
-        
-        if(fin.is_open())
+
+        if (fin.is_open())
         {
-            fin >> M2;
+            fin >> m;
             fin.close();
         }
-        cout << M2;
+        cout << m;
+        
     }
     catch (IndexOutOfBounds e)
     {

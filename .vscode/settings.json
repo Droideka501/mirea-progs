@@ -41,7 +41,8 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "typeinfo": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "ctime": "cpps"
     },
     "C_Cpp.intelliSenseEngineFallback": "Enabled"
 }
