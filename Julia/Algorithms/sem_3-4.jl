@@ -1,6 +1,6 @@
 
 """Перестановка двух элементов"""
-function swap!(array::AbstractVector, i, j)
+function swap!(array, i, j)
     temp = array[i]
     array[i] = array[j]
     array[j] = temp
@@ -210,10 +210,22 @@ end
 
 """"""
 function transposeFirstMod!(A::AbstractMatrix)
-    for i in 1:lenght(A[1])
+    for i in 1:length(A[1])
         temp = deepcopy(A[i, :])
         A[i, :] = deepcopy(A[:, i])
         A[:, i] = temp
+    end
+    return A
+end
+
+""""""
+function transposeSecondMod!(A::AbstractMatrix)
+    for i in 1:length(A[1])
+        for j in 1:i
+            temp = A[i, j]
+            A[i, j] = A[j, i]
+            A[j, i] = temp
+        end
     end
     return A
 end

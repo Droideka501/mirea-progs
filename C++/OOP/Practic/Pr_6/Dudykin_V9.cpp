@@ -89,6 +89,14 @@ public:
         }
     }
 
+    void filter(bool (*cmp)(T), LinkedList<T> dest)
+    {
+        for(Element<T> *current = head; current != NULL; current = current->next)
+        {
+            if(cmp(current->info)) dest->push(current->info);
+        }
+    }
+
     template <class T1>
     friend ostream &operator<<(ostream &s, LinkedList<T1> &el);
 };
@@ -105,6 +113,11 @@ ostream &operator<<(ostream &s, LinkedList<T1> &el)
     }
     s << "}";
     return s;
+}
+
+bool f(int v)
+{
+    return (v < 5);
 }
 
 template <class T>
@@ -187,10 +200,39 @@ public:
     virtual Element<T> *find(T value)
     {
         Element<T> *p = LinkedList<T>::head;
+
         while (p != NULL)
         {
             if (p->info == value)
                 return p;
+            p = p->next;
+        }
+        return NULL;
+    }
+
+    virtual Element<T> *find(T value)
+    {
+        Element<T> *p = LinkedList<T>::head;
+
+        while (p != NULL)
+        {
+            if (p->info == value)
+                return p;
+            p = p->next;
+        }
+        return NULL;
+    }
+
+    virtual Element<T> *find(int (*cmp)(T))
+    {
+        Element<T> *p = LinkedList<T>::head;
+
+        while (p != NULL)
+        {
+            if (cmp(p->info) == 1)
+            {
+                return p;
+            }
             p = p->next;
         }
         return NULL;
@@ -208,9 +250,25 @@ public:
             return NULL;
     }
 
+    virtual Element<T> *find_r(T key, int (*cmp)(T))
+    {
+        Element<T> *p = LinkedList<T>::head;
+
+        while (p != NULL)
+        {
+            if (cmp(p->info, key) == 0)
+            {
+                return p;
+            }
+            p = p->next;
+        }
+        return NULL;
+    }
+
+    
     virtual Element<T> &operator[](int index)
     {
-        if(LinkedList<T>::head == NULL)
+        if (LinkedList<T>::head == NULL)
         {
             // throw;
         }
@@ -219,15 +277,56 @@ public:
             // throw;
         }
         Element<T> *p = LinkedList<T>::head;
-        for(int i = 0; i < index; i++)
+        for (int i = 0; i < index; i++)
         {
             p = p->next;
         }
         return *p;
     }
-
-    
 };
+
+class SupClass
+{
+public:
+    int data;
+    int key;
+    SupClass()
+    {
+        key = 0;
+        data = 1;
+        cout << "\nmSupClass default constructor";
+    }
+    SupClass(int k, int v = 0)
+    {
+        key = k;
+        data = v;
+        cout << "\nmSupClass constructor";
+    }
+
+    ~SupClass() { cout << "\nmy_class destructor"; }
+
+    friend ostream &operator<<(ostream &s, SupClass &value);
+    friend int compare(SupClass s1, SupClass s2);
+};
+
+ostream &operator<<(ostream &s, SupClass &value)
+{
+    s << value.key << ", " << value.data;
+    return s;
+}
+
+int compare(SupClass s1, SupClass s2)
+{
+    if (s1.key == s2.key)
+        return 0;
+    else
+        s1.key < s2.key ? -1 : 1;
+}
+
+int even(SupClass s1)
+{
+    s1.key % 2 ==0 ? 1 : 0;
+}
 
 int main()
 {
