@@ -28,6 +28,7 @@ end
 #    end
 #end
 
+#она же сортировка расческой
 """Сортировка Шелла более оптимизированная"""
 function shellSort!(array::AbstractVector)
     gap = length(array)
