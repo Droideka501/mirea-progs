@@ -21,7 +21,10 @@ public:
 
     int getX() { return x; }
     int getY() { return y; }
-    bool operator==(const radiusVector &P) { return (x == P.x && y == P.y || x == P.y && y == P.x); }
+    bool operator==(const radiusVector &v) { return (x == v.x && y == v.y); }
+
+    bool isEqualNorm(const radiusVector &v2) { return (x == v2.x && y == v2.y || x == v2.y && y == v2.x); }
+    
 
     int Norm(char* type_of_norming = "euclidian") 
     {

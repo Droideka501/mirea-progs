@@ -5,7 +5,9 @@
 #include <queue>
 #include <set>
 
-void vectorMatrixPrint(const std::vector<std::vector<int>> &v)
+
+template <class T>
+void vectorMatrixPrint(const std::vector<std::vector<T>> &v)
 {
     for (int i = 0; i < v.size(); i++)
     {
@@ -24,16 +26,8 @@ void vectorMatrixPrint(const std::vector<std::vector<int>> &v)
     }
 }
 
-void vectorIntPrint(const std::vector<int> &v)
-{
-    for (int i = 0; i < v.size(); i++)
-    {
-        std::cout << v[i] << " ";
-    }
-    std::cout << std::endl;
-}
-
-void vectorBoolPrint(const std::vector<bool> &v)
+template <class T>
+void vectorPrint(const std::vector<T> &v)
 {
     for (int i = 0; i < v.size(); i++)
     {
