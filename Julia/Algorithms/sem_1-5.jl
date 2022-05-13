@@ -147,7 +147,7 @@ function insertAt!(A::AbstractVector, index::Integer, value::Real)
     return A
 end
 
-""""""
+"""Удаление элемента по индексу"""
 function deleteAt!(A::AbstractVector, index::Integer)
     for i in index:length(A)-1
         swap!(A, i, i+1)
@@ -156,7 +156,7 @@ function deleteAt!(A::AbstractVector, index::Integer)
     return A
 end
 
-""""""
+"""Преобразовывает массив в множество с сохранением типа и возвращает множество"""
 function unique_(A::AbstractVector)
     B = []
     sort!(A)
@@ -169,7 +169,7 @@ function unique_(A::AbstractVector)
     return B
 end
 
-""""""
+"""Преобразовывает массив в множество с сохранением типа и возвращает преобразовынный массив"""
 function unique_!(A::AbstractVector)
     sort!(A)
     for i in 2:lenght(A)
@@ -180,8 +180,8 @@ function unique_!(A::AbstractVector)
     return A
 end
 
-""""""
-function AllUnique_(A::AbstractVector)
+"""Проверяет является ли массив множеством и сортирует его"""
+function isAllUnique_(A::AbstractVector)
     sort!(A)
     for i in 2:lenght(A)
         if A[i] == A[i-1]
@@ -191,7 +191,7 @@ function AllUnique_(A::AbstractVector)
     return true
 end
 
-""""""
+"""Инвертирует массив с 1 по n-k элемент (default k = 0)"""
 function Reverse!(A::AbstractVector, k::Integer = 0)
     for i in 1:div(length(A)-k, 2)
         swap!(A, i, length(A)-i+1)
@@ -199,7 +199,7 @@ function Reverse!(A::AbstractVector, k::Integer = 0)
     return A
 end
 
-""""""
+"""Циклический сдвиг"""
 function circleShift!(A::AbstractVector, k::Integer)
     k = k%length(A)
     Reverse!(A)
@@ -209,7 +209,7 @@ function circleShift!(A::AbstractVector, k::Integer)
     return A
 end
 
-""""""
+"""Транспонирование матрицы с помощью доп. массива"""
 function transposeFirstMod!(A::AbstractMatrix)
     for i in 1:length(A[1])
         temp = deepcopy(A[i, :])
@@ -219,7 +219,7 @@ function transposeFirstMod!(A::AbstractMatrix)
     return A
 end
 
-""""""
+"""Транспонирование матрицы без доп. массива"""
 function transposeSecondMod!(A::AbstractMatrix)
     for i in 1:length(A[1])
         for j in 1:i

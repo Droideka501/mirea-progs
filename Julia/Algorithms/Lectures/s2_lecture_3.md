@@ -413,7 +413,6 @@ $$f(x)=0,$$
 ```julia
 function bisect(f::Funcnion, a, b, ε)
     y_a=f(a)
-    # ИНВАРИАНТ: f(a)*f(b) < 0 (т.е. (a,b) - содержит корень)
     while b-a > ε
         x_m = (a+b)/2
         y_m=f(x_m)

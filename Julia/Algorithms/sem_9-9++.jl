@@ -92,7 +92,8 @@ function rank(Matrix)
     return i-1
 end
 
-
+"""Обратная матрица"""
+#Не работает, надо переопределить toUpperTriangle!() для не квадратной матрицы
 function reversMatix(Matrix)
     E = diagm([1 for i in 1:size(Matrix, 1)])
     D = 
