@@ -44,6 +44,20 @@ function shellSort!(array::AbstractVector)
     end
 end
 
+"""Сортировка расчетской"""
+function comb_sort!(array::AbstractVector)
+    gap = length(array)
+    while gap != 0
+        for i in firstindex(array):lastindex(array)-gap
+            if array[i] > array[i+gap]
+                array[i], array[i+gap] = array[i+gap], array[i]
+            end
+        end
+        gap-=1
+    end
+    return array
+end                
+
 """Поиск всех максимальных значений массива"""
 function findAllMax(array::AbstractVector)
     index_max = Vector{Int}(undef, length(array))

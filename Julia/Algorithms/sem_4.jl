@@ -49,7 +49,7 @@ end
         elseif A[L+1] > b
             A[L+1], A[M] = A[M], A[L+1]
             M -= 1
-        else # if A[L+1] < b
+        else
             L += 1; K += 1
             A[L], A[K] = A[K], A[L]
         end
@@ -89,5 +89,13 @@ function insert_end!(array)::Nothing
     end
 end
 
+"""Алгоритм вычисления среднего квадратического отклонения от среднего значения массива"""
 function standard_deviation(A)
-    for 
+    Sx = 0
+    Sx2 = 0
+    for i in firstindex(A):lastindex(A)
+        Sx += i
+        Sx2 += i*i
+    end
+    return sqrt(Sx2 / length(A) - Sx * Sx / length(A)/ length(A))
+end

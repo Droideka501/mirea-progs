@@ -165,7 +165,7 @@ end
 """Алгоритм решето Эратосфена"""
 function eratosphen(n::Integer)
     is_prime = ones(Bool, n) 
-    is_prime[1] = false # 1 — не является простым числом
+    is_prime[1] = false
     for i in 2:round(Int, sqrt(n))
         if is_prime[i] 
             for j in (i*i):i:n 
@@ -173,7 +173,7 @@ function eratosphen(n::Integer)
             end
         end
     end
-    return (1:n)[is_prime] # filter(x -> is_prime[x], 1:n) 
+    return (1:n)[is_prime]
 end
 
 """Простые делители числа и их кратности"""
@@ -185,7 +185,7 @@ function divsAndTheirMultiple(n::Integer)
         if n % d == 0
             push!(divs, d)
             push!(multiples, 0)
-            while(n%d==0)
+            while n%d==0
                 n /= d
                 multiples[length(multiples)] += 1 
             end

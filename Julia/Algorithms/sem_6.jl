@@ -15,7 +15,8 @@ function newton(r::Function, x; epsilon = 1e-8, max_num_iter = 20)
     end
 end
 
-#newton(x -> (cos(x)-x)/(sin(x)+1), 0.5)
+#newton(x -> (cos(x)-x)/(sin(x)+1), 0.5)+
+
 """Возвращающей значение многочлена и его производной в заданной точке"""
 function polyval(P,x)
     dQ = 0
