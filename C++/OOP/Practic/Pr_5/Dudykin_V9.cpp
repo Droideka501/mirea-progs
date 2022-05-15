@@ -261,7 +261,7 @@ int main()
         //cin >> M2;
         //M1.print();
 
-        Matrix m(2, 2);
+        Matrix m(2, 3);
         vector <double> v;
         m.generateRandMatrix();
         cout << m;

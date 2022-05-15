@@ -1,6 +1,6 @@
 """Сортировка Хоара"""
 function quick_sort!(A)
-    length(A) <= 1 &&  return A
+    length(A) <= 1 && return A
     N = length(A)
     left, right = part_sort!(A, A[rand(1:N)])
     quick_sort!(left)
@@ -97,5 +97,5 @@ function standard_deviation(A)
         Sx += i
         Sx2 += i*i
     end
-    return sqrt(Sx2 / length(A) - Sx * Sx / length(A)/ length(A))
+    return sqrt((Sx2 / length(A)) - ((Sx/ length(A))*(Sx/ length(A))))
 end

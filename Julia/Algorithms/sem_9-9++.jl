@@ -22,12 +22,12 @@ end
 function toUpperTriangle!(Matrix)
     coef(a, b) = b / a
     
-    n = size(Matrix, 1)
-    for t in 1:n-1
+    n, m = size(Matrix)
+    for t in 1:m-1
         for i in t+1:n
             c = coef(Matrix[t, t], Matrix[i, t])
             Matrix[i, t] = 0
-            for j in t+1:n
+            for j in t+1:m
                 Matrix[i, j] -= c * Matrix[t, j]
             end
         end
