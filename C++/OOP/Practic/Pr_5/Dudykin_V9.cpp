@@ -43,18 +43,25 @@ public:
 
     BaseMatrix operator=(BaseMatrix M)
     {
-        if (M.height == height && M.width == width)
+        if (typeid(M) != typeid(Matrix))
         {
-            for (int i = 0; i < height; i++)
-                for (int j = 0; j < width; j++)
-                    ptr[i][j] = M.ptr[i][j];
+            throw NotAMatrixType("Type of object is not a Matrix", typeid(M).name());
         }
         else
         {
-            throw UnequalSize("Unequal size of matrices in operator =", height, width, M.height, M.width);
-        }
+            if (M.height == height && M.width == width)
+            {
+                for (int i = 0; i < height; i++)
+                    for (int j = 0; j < width; j++)
+                        ptr[i][j] = M.ptr[i][j];
+            }
+            else
+            {
+                throw UnequalSize("Unequal size of matrices in operator =", height, width, M.height, M.width);
+            }
 
-        return *this;
+            return *this;
+        }
     }
 
     double *operator[](int index)
@@ -75,6 +82,7 @@ public:
         return ptr[index_1][index_2];
     }
 
+    //транспонирование
     BaseMatrix operator+()
     {
         if (width != height)
@@ -90,6 +98,10 @@ public:
 
     BaseMatrix operator+(BaseMatrix M)
     {
+        if (typeid(M) != typeid(Matrix))
+        {
+            throw NotAMatrixType("Type of object is not a Matrix", typeid(M).name());
+        }
         if (width != M.width || height != M.height)
         {
             throw UnequalSize("Unequal size of matrices in operator +", height, width, M.height, M.width);
@@ -202,23 +214,30 @@ public:
     Matrix(int Height = 2, int Width = 2) : BaseMatrix(Height, Width) {}
     Matrix(const Matrix &M)
     {
-        if (ptr != NULL)
+        if (typeid(M) != typeid(Matrix))
         {
-            for (int i = 0; i < height; i++)
-                delete[] ptr[i];
-            delete[] ptr;
-            ptr = NULL;
+            throw NotAMatrixType("Type of object is not a Matrix", typeid(M).name());
         }
         else
         {
-            height = M.height;
-            width = M.width;
-            ptr = new double *[height];
-            for (int i = 0; i < height; i++)
+            if (ptr != NULL)
             {
-                ptr[i] = new double[width];
-                for (int j = 0; j < width; j++)
-                    ptr[i][j] = M.ptr[i][j];
+                for (int i = 0; i < height; i++)
+                    delete[] ptr[i];
+                delete[] ptr;
+                ptr = NULL;
+            }
+            else
+            {
+                height = M.height;
+                width = M.width;
+                ptr = new double *[height];
+                for (int i = 0; i < height; i++)
+                {
+                    ptr[i] = new double[width];
+                    for (int j = 0; j < width; j++)
+                        ptr[i][j] = M.ptr[i][j];
+                }
             }
         }
     }
@@ -227,28 +246,36 @@ public:
     void generateRandMatrix(int max_rand = 100)
     {
         srand(time(0));
-        for(int i = 0; i < height; i++)
-        {        
-            for(int j = 0; j < width; j++)
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
             {
                 ptr[i][j] = rand() % max_rand;
             }
         }
     }
-    friend void geometricMeanOfRows(vector<double>& v, Matrix& M);
-
+    friend void geometricMeanOfRows(Matrix &M);
 };
 
-void geometricMeanOfRows(vector<double>& v, Matrix& M)
+void geometricMeanOfRows(Matrix &M)
 {
-    for(int i = 0; i < M.height; i++)
+
+    if (typeid(M) != typeid(Matrix))
     {
-        double gm = 1;
-        for(int j = 0; j < M.width; j++)
+        throw NotAMatrixType("Type of object is not a Matrix", typeid(M).name());
+    }
+    else
+    {
+        vector<double> v;
+        for (int i = 0; i < M.height; i++)
         {
-            gm *= sqrt(M.ptr[i][j]);
+            double gm = 1;
+            for (int j = 0; j < M.width; j++)
+            {
+                gm *= sqrt(M.ptr[i][j]);
+            }
+            v.push_back(gm);
         }
-        v.push_back(gm);
     }
 }
 
@@ -257,22 +284,21 @@ int main()
     try
     {
         BaseMatrix M1, M2(2, 3), M;
-        //M = +M2;
-        //cin >> M2;
-        //M1.print();
+        // M = +M2;
+        // cin >> M2;
+        // M1.print();
 
         Matrix m(2, 3);
-        vector <double> v;
+        vector<double> v;
         m.generateRandMatrix();
         cout << m;
-        geometricMeanOfRows(v, m);
-        for(int i = 0; i < v.size(); i++)
+        geometricMeanOfRows(m);
+        for (int i = 0; i < v.size(); i++)
         {
             cout << v[i] << " ";
         }
         cout << endl;
 
-        
         ofstream fout("text.txt");
 
         if (fout.is_open())
@@ -290,7 +316,10 @@ int main()
             fin.close();
         }
         cout << m;
-        
+    }
+    catch (NotAMatrixType e)
+    {
+        e.print();
     }
     catch (IndexOutOfBounds e)
     {

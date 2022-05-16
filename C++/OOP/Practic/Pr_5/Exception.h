@@ -95,8 +95,28 @@ public:
 
 };
 
+class NotAMatrixType : public Exception
+{
+protected:
+	const char* object_type;	
+public:
+	NotAMatrixType(char* s, const char* type) : Exception(s)
+	{
+		object_type = type;
+	}
+	NotAMatrixType(const char* s, const char* type) : Exception(s)
+	{
+		object_type = type;
+	}
+	NotAMatrixType(const NotAMatrixType& e)
+	{
+		str = new char[strlen(e.str) + 1];
+		strcpy(str, e.str);
+	}
+};
 
 
+/*
 class NegativeIndex : public IndexOutOfBounds
 {
 
@@ -106,3 +126,4 @@ class IndexOutOfRange : public IndexOutOfBounds
 {
 
 };
+*/
