@@ -18,7 +18,7 @@ function test_gauss(N, f)
     return U*X
 end
 
-"""Квадратную матрицу к ступенчатому виду"""
+"""Приводит матрицу к ступенчатому виду"""
 function toUpperTriangle!(Matrix)
     coef(a, b) = b / a
     
@@ -99,4 +99,14 @@ function reversMatix(Matrix)
     D = 
     toUpperTriangle!(Matrix)
     Temp = Matrix[end:-1:begin]
+end
+
+function add(Ma, Mb)
+    Mres = cat(Ma, Mb)
+    for j in 1:size(Mb, 1)
+        for i in Mb[begin:end, j:j]
+            push!(@view(Ma[j, begin:end]), i)
+        end
+    end
+    return Ma
 end

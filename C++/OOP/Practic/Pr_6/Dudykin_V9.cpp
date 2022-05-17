@@ -1,5 +1,3 @@
-// LinkedListInherit21.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
 using namespace std;
 
 #include <iostream>
@@ -8,10 +6,11 @@ template <class T>
 class Element
 {
 protected:
-public:
     Element *next;
     Element *prev;
     T info;
+
+public:
     Element(T data)
     {
         next = prev = NULL;
@@ -31,6 +30,13 @@ public:
         prev = el.prev;
         info = el.info;
     }
+
+    T getInfo() { return info; }
+    Element *getNext() { return next; }
+    Element *getPrev() { return prev; }
+    void setInfo(T Info) { info = Info; }
+    void setNext(Element *Next) { next = Next; }
+    void setPrev(Element *Prev) { prev = Prev; }
 
     template <class T1>
     friend ostream &operator<<(ostream &s, Element<T1> &el);
@@ -65,7 +71,7 @@ public:
     virtual Element<T> *push(T value) = 0;
 
     //добавить элемент в середину списка
-    virtual Element<T> *insert(T value, Element<T> *current) = 0;
+    virtual Element<T> *insert(T value, Element<T> *predessesor = NULL) = 0;
 
     //поиск элемента в списке
     virtual Element<T> *find(T value) = 0;
@@ -84,16 +90,19 @@ public:
         Element<T> *temp = p;
         for (; p != NULL; p = temp)
         {
-            temp = p->next;
+            temp = p->getNext();
             delete p;
         }
     }
 
-    void filter(bool (*cmp)(T), LinkedList<T> dest)
+    void filter(bool (*cmp)(T), LinkedList<T> *dest)
     {
-        for(Element<T> *current = head; current != NULL; current = current->next)
+        for (Element<T> *current = head; current != NULL; current = current->getNext())
         {
-            if(cmp(current->info)) dest->push(current->info);
+            if (cmp(current->getInfo()))
+            {
+                dest->push(current->getInfo());
+            }
         }
     }
 
@@ -108,8 +117,8 @@ ostream &operator<<(ostream &s, LinkedList<T1> &el)
     Element<T1> *p = el.head;
     while (p != NULL)
     {
-        s << p->info << ", ";
-        p = p->next;
+        s << p->getInfo() << ", ";
+        p = p->getNext();
     }
     s << "}";
     return s;
@@ -143,12 +152,12 @@ public:
         {
 
             Element<T> *p = LinkedList<T>::head;
-            while (p->next != LinkedList<T>::tail)
+            while (p->getNext() != LinkedList<T>::tail)
             {
-                p = p->next;
+                p = p->getNext();
             }
 
-            p->next = NULL;
+            p->setNext(NULL);
             LinkedList<T>::tail = p;
         }
         LinkedList<T>::count--;
@@ -165,8 +174,8 @@ public:
         else
         {
             Element<T> *new_el = new Element<T>(value);
-            LinkedList<T>::tail->next = new_el;
-            LinkedList<T>::tail = LinkedList<T>::tail->next;
+            LinkedList<T>::tail->setNext(new_el);
+            LinkedList<T>::tail = LinkedList<T>::tail->getNext();
         }
         LinkedList<T>::count++;
         return LinkedList<T>::tail;
@@ -185,13 +194,13 @@ public:
 
         if (predessesor == NULL)
         {
-            new_el->next = LinkedList<T>::head;
+            new_el->setNext(LinkedList<T>::head);
             LinkedList<T>::head = new_el;
         }
         else
         {
-            new_el->next = predessesor->next;
-            predessesor->next = new_el;
+            new_el->setNext(predessesor->getNext());
+            predessesor->setNext(new_el);
         }
         LinkedList<T>::count++;
         return new_el;
@@ -203,22 +212,9 @@ public:
 
         while (p != NULL)
         {
-            if (p->info == value)
+            if (p->getInfo() == value)
                 return p;
-            p = p->next;
-        }
-        return NULL;
-    }
-
-    virtual Element<T> *find(T value)
-    {
-        Element<T> *p = LinkedList<T>::head;
-
-        while (p != NULL)
-        {
-            if (p->info == value)
-                return p;
-            p = p->next;
+            p = p->getNext();
         }
         return NULL;
     }
@@ -229,11 +225,11 @@ public:
 
         while (p != NULL)
         {
-            if (cmp(p->info) == 1)
+            if (cmp(p->getInfo()) == 1)
             {
                 return p;
             }
-            p = p->next;
+            p = p->getNext();
         }
         return NULL;
     }
@@ -242,30 +238,29 @@ public:
     {
         if (current == NULL)
             current = LinkedList<T>::head;
-        if (current->info == value)
+        if (current->getInfo() == value)
             return current;
-        if (current->next)
-            return find_r(value, current->next);
+        if (current->getNext())
+            return find_r(value, current->getNext());
         else
             return NULL;
     }
 
-    virtual Element<T> *find_r(T key, int (*cmp)(T))
+    virtual Element<T> *find(T key, int (*cmp)(T))
     {
         Element<T> *p = LinkedList<T>::head;
 
         while (p != NULL)
         {
-            if (cmp(p->info, key) == 0)
+            if (cmp(key) == 0)
             {
                 return p;
             }
-            p = p->next;
+            p = p->getNext();
         }
         return NULL;
     }
 
-    
     virtual Element<T> &operator[](int index)
     {
         if (LinkedList<T>::head == NULL)
@@ -279,9 +274,55 @@ public:
         Element<T> *p = LinkedList<T>::head;
         for (int i = 0; i < index; i++)
         {
-            p = p->next;
+            p = p->getNext();
         }
         return *p;
+    }
+};
+
+template <class T>
+class DoubleSidesStack : public Stack<T>
+{
+public:
+    virtual Element<T> *push(T value)
+    {
+        Element<T> *old_tail = LinkedList<T>::tail;
+        Element<T> *p = Stack<T>::push(value);
+        p->setPrev(old_tail);
+        return p;
+    }
+
+    virtual Element<T> *pop()
+    {
+        if (LinkedList<T>::head == LinkedList<T>::tail)
+        {
+            return NULL;
+        }
+        if ()
+
+            Element<T> *new_tail = LinkedList<T>::tail->getPrev();
+        Element<T> *res = LinkedList<T>::tail;
+        new_tail->setNext(NULL);
+        res->setPrev(NULL);
+        LinkedList<T>::tail = new_tail;
+        LinkedList<T>::count--;
+        return res;
+    }
+
+    virtual Element<T> *insert(T value, Element<T> *predessesor = NULL)
+    {
+        if (predessesor == LinkedList<T>::tail)
+        {
+            return push(value);
+        }
+        Element<T> *inserted = Stack<T>::insert(value, predessesor);
+        if (inserted == NULL)
+        {
+            return NULL;
+        }
+        inserted->setPrev(predessesor);
+        inserted->getNext()->setPrev(inserted);
+        return inserted;
     }
 };
 
@@ -294,16 +335,16 @@ public:
     {
         key = 0;
         data = 1;
-        cout << "\nmSupClass default constructor";
+        cout << "\nSupClass default constructor";
     }
     SupClass(int k, int v = 0)
     {
         key = k;
         data = v;
-        cout << "\nmSupClass constructor";
+        cout << "\nSupClass constructor";
     }
 
-    ~SupClass() { cout << "\nmy_class destructor"; }
+    ~SupClass() { cout << "\nSupClass destructor"; }
 
     friend ostream &operator<<(ostream &s, SupClass &value);
     friend int compare(SupClass s1, SupClass s2);
@@ -325,7 +366,7 @@ int compare(SupClass s1, SupClass s2)
 
 int even(SupClass s1)
 {
-    s1.key % 2 ==0 ? 1 : 0;
+    s1.key % 2 == 0 ? 1 : 0;
 }
 
 int main()
@@ -335,7 +376,7 @@ int main()
     {
         s.push(i);
     }
-    cout << s;
+    cout << s << endl;
     s.pop();
     cout << s << endl;
     cout << s.find(2) << endl;
