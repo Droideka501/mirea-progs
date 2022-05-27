@@ -75,9 +75,11 @@ function det(Matrix)
     toUpperTriangle!(Matrix)
     det = 1
     i = 1
-    while(Matrix[i, i] != 0)
-        det *= Matrix[i, i]
-        i+=1
+    while (i <= size(Matrix, 1))
+        if (Matrix[i, i] != 0)
+            det *= Matrix[i, i]
+            i+=1
+        else break end
     end
     return det
 end
@@ -101,12 +103,25 @@ function reversMatix(Matrix)
     Temp = Matrix[end:-1:begin]
 end
 
-function add(Ma, Mb)
-    Mres = cat(Ma, Mb)
-    for j in 1:size(Mb, 1)
-        for i in Mb[begin:end, j:j]
-            push!(@view(Ma[j, begin:end]), i)
-        end
+function add(A::AbstractMatrix{T}, B::AbstractMatrix{T}) where T<:Number
+    size(A) == size(B)
+    C = similar(A)
+    for  j in 1:size(A,2), i in 1:size(A,1)
+        C[i,j] = A[i,j] + B[i,j]
     end
-    return Ma
+    return C
+end
+ 
+function mul(A::AbstractMatrix{T}, B::AbstractMatrix{T}) where T<:Number 
+    size(A,2) == size(B, 1)
+    C = Matrix{T}(undef, size(A,1), size(B,2))
+    At=A'
+    for j in 1:size(C,2), i in 1:size(C,1)
+        p=0.0
+        for k in 1:size(A,2)
+            p += At[k,i]*B[k,j]
+        end
+        C[i,j] = p
+    end
+    return C
 end

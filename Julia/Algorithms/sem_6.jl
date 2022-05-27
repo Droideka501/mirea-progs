@@ -2,8 +2,8 @@ using Polynomials
 using Plots
 include("sem_7.jl")
 
-"""Вычисляет значение многочлена p в точке x"""
-function polyval(P::Vector{T} where T, x)
+"""Вычисляет значение многочлена и производной многочлена p в точке x"""
+function polyval(P, x)
     dQ = 0
     Q = P[1]
     for i in 2:length(P)
@@ -65,7 +65,12 @@ end
 
 #MyP = Polynom{Int64}([-1, 0, 0, 1])    # многочлен z^3 - 1
 """"""
-function draw(MyP::Polynow)
+function draw()
+    function rP(x)
+        y, dy = polyval(MyP, x)
+        return -y/dy
+    end
+    MyP = Polinom{Int64}([-1, 0, 0, 1])
     X = []
     Y = []
 
@@ -79,6 +84,7 @@ function draw(MyP::Polynow)
             push!(Y, k.im)
         end
     end
+    
     plot(X, Y, seriestype = :scatter, title = "Roots")
 end
     

@@ -1,8 +1,8 @@
 """Представление многочлена ввиде вектора коэффициентов"""
-struct Polynom{T}
+struct Polinom{T}
     coeff::Vector{T}
 
-    function Polynom{T}(coeff) where T 
+    function Polinom{T}(coeff) where T 
         n = 0
         i = length(coeff)
         while coeff[i] == 0
@@ -13,7 +13,15 @@ struct Polynom{T}
     end
 end
 
-function Base. +(p::Polinomial{T}, q::Polinomial{T})::Polinomial{T} where T
+function Base. getindex(p::Polinom{T}, i) where T
+    return p.coeff[i]
+end
+
+function Base. length(p::Polinom{T}) where T
+    return length(p.coeff)
+end
+
+function Base. +(p::Polinom{T}, q::Polinom{T})::Polinom{T} where T
     np, nq = length(p.coeff), length(q.coeff)
     if  np >= nq 
         coeff = similar(p.coeff)
@@ -31,17 +39,17 @@ function Base. +(p::Polinomial{T}, q::Polinomial{T})::Polinomial{T} where T
     return Polinomial{T}(coeff)
 end
 
-Base. +(p::Polinomial{T}, c::T) where T = +(p, Polinomial{T}([c]))
-Base. +(c::T, p::Polinomial{T}) where T = +(Polinomial{T}([c]), p)
+Base. +(p::Polinom{T}, c::T) where T = +(p, Polinomial{T}([c]))
+Base. +(c::T, p::Polinom{T}) where T = +(Polinomial{T}([c]), p)
 
-Base. -(p::Polinomial{T}, c::T) where T = -(p, Polinomial{T}([c]))
-Base. -(c::T, p::Polinomial{T}) where T = -(Polinomial{T}([c]), p)
+Base. -(p::Polinom{T}, c::T) where T = -(p, Polinomial{T}([c]))
+Base. -(c::T, p::Polinom{T}) where T = -(Polinomial{T}([c]), p)
 
-Base. *(p::Polinomial{T}, c::T) where T = *(p, Polinomial{T}([c]))
-Base. *(c::T, p::Polinomial{T}) where T = *(Polinomial{T}([c]), p)
+Base. *(p::Polinom{T}, c::T) where T = *(p, Polinomial{T}([c]))
+Base. *(c::T, p::Polinom{T}) where T = *(Polinomial{T}([c]), p)
 
 """Выводит многочлен в читабельном виде"""
-function Base.display(p::Polynom)
+function Base.display(p::Polinom)
     if isempty(p.coeff)
         println(0)
         return "0"
@@ -74,7 +82,7 @@ struct Residue{T, M}
     end
 end
 
-# Операции сложения и умножения
+#Операции
 Base. +(a::Residue{T,M}, b::Residue{T,M}) where {T,M} = (a.value + b.value) % M
 
 Base. *(a::Residue{T,M}, b::Residue{T,M}) where {T,M} = (a.value * b.value) % M

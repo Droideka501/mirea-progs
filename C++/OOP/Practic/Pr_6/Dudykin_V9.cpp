@@ -1,6 +1,7 @@
-using namespace std;
-
 #include <iostream>
+#include <string>
+
+using namespace std;
 
 template <class T>
 class Element
@@ -11,13 +12,13 @@ protected:
     T info;
 
 public:
-    Element(T data)
+    Element(T &data)
     {
         next = prev = NULL;
         info = data;
     }
 
-    Element(Element *Next, Element *Prev, T data)
+    Element(Element *Next, Element *Prev, T &data)
     {
         next = Next;
         prev = Prev;
@@ -34,7 +35,7 @@ public:
     T getInfo() { return info; }
     Element *getNext() { return next; }
     Element *getPrev() { return prev; }
-    void setInfo(T Info) { info = Info; }
+    void setInfo(T &Info) { info = Info; }
     void setNext(Element *Next) { next = Next; }
     void setPrev(Element *Prev) { prev = Prev; }
 
@@ -68,13 +69,13 @@ public:
     virtual Element<T> *pop() = 0;
 
     //добавить элемент в список
-    virtual Element<T> *push(T value) = 0;
+    virtual Element<T> *push(T &value) = 0;
 
     //добавить элемент в середину списка
-    virtual Element<T> *insert(T value, Element<T> *predessesor = NULL) = 0;
+    virtual Element<T> *insert(T &value, Element<T> *predessesor = NULL) = 0;
 
     //поиск элемента в списке
-    virtual Element<T> *find(T value) = 0;
+    virtual Element<T> *find(T &value) = 0;
 
     //получить первый/последний элемент списка
     // virtual Element<T> *front(T value) = 0;
@@ -95,7 +96,10 @@ public:
         }
     }
 
-    void filter(bool (*cmp)(T), LinkedList<T> *dest)
+    virtual int size() { return count; }
+
+    /*
+    virtual void filter(bool (*cmp)(T), LinkedList<T> *dest)
     {
         for (Element<T> *current = head; current != NULL; current = current->getNext())
         {
@@ -105,6 +109,7 @@ public:
             }
         }
     }
+    */
 
     template <class T1>
     friend ostream &operator<<(ostream &s, LinkedList<T1> &el);
@@ -164,7 +169,7 @@ public:
         return res;
     }
 
-    virtual Element<T> *push(T value)
+    virtual Element<T> *push(T &value)
     {
         if (LinkedList<T>::tail == NULL)
         {
@@ -181,7 +186,7 @@ public:
         return LinkedList<T>::tail;
     }
 
-    virtual Element<T> *insert(T value, Element<T> *predessesor = NULL)
+    virtual Element<T> *insert(T &value, Element<T> *predessesor = NULL)
     {
         if (LinkedList<T>::head == NULL || predessesor == LinkedList<T>::tail)
         {
@@ -206,7 +211,7 @@ public:
         return new_el;
     }
 
-    virtual Element<T> *find(T value)
+    virtual Element<T> *find(T &value)
     {
         Element<T> *p = LinkedList<T>::head;
 
@@ -234,7 +239,7 @@ public:
         return NULL;
     }
 
-    virtual Element<T> *find_r(T value, Element<T> *current = NULL)
+    virtual Element<T> *find_r(T &value, Element<T> *current = NULL)
     {
         if (current == NULL)
             current = LinkedList<T>::head;
@@ -267,7 +272,7 @@ public:
         {
             // throw;
         }
-        if (index > LinkedList<T>::count || index < 0L)
+        if (index > LinkedList<T>::count || index < 0)
         {
             // throw;
         }
@@ -284,7 +289,7 @@ template <class T>
 class DoubleSidesStack : public Stack<T>
 {
 public:
-    virtual Element<T> *push(T value)
+    virtual Element<T> *push(T &value)
     {
         Element<T> *old_tail = LinkedList<T>::tail;
         Element<T> *p = Stack<T>::push(value);
@@ -298,9 +303,7 @@ public:
         {
             return NULL;
         }
-        if ()
-
-            Element<T> *new_tail = LinkedList<T>::tail->getPrev();
+        Element<T> *new_tail = LinkedList<T>::tail->getPrev();
         Element<T> *res = LinkedList<T>::tail;
         new_tail->setNext(NULL);
         res->setPrev(NULL);
@@ -309,7 +312,7 @@ public:
         return res;
     }
 
-    virtual Element<T> *insert(T value, Element<T> *predessesor = NULL)
+    virtual Element<T> *insert(T &value, Element<T> *predessesor = NULL)
     {
         if (predessesor == LinkedList<T>::tail)
         {
@@ -324,63 +327,117 @@ public:
         inserted->getNext()->setPrev(inserted);
         return inserted;
     }
+
+    virtual Element<T> &operator[](int index)
+    {
+        if (LinkedList<T>::head == NULL)
+        {
+            // throw Exception("List is empty");
+        }
+        if (index > LinkedList<T>::count || index < 0)
+        {
+            // throw Exception("Index out of range");
+        }
+        if (index+1 <= LinkedList<T>::count / 2)
+        {
+            Element<T> *p = LinkedList<T>::head;
+            for (int i = 0; i < index; i++)
+            {
+                p = p->getNext();
+            }
+            return *p;
+        }
+        else
+        {
+            Element<T> *p = LinkedList<T>::tail;
+            for (int i = LinkedList<T>::count; i != index+1; i--)
+            {
+                p = p->getPrev();
+            }
+            return *p;
+        }
+    }
+
+    template <class T1>
+    friend ostream operator<<(ostream &s, const DoubleSidesStack<T1> &stack);
 };
 
-class SupClass
+template <class T3>
+ostream operator<<(ostream &s, const DoubleSidesStack<T3> &stack)
 {
+}
+
+class Car
+{
+private:
+    string brand;
+    string color;
+    string serial_num;
+    int num_of_doors;
+    int year_of_present;
+    int price;
+
 public:
-    int data;
-    int key;
-    SupClass()
+    Car(string brand_ = "unknown", string color_ = "unknown", string serial_num_ = "unknown", int num_of_doors_ = 0, int year_of_present_ = 0, int price_ = 0)
     {
-        key = 0;
-        data = 1;
-        cout << "\nSupClass default constructor";
-    }
-    SupClass(int k, int v = 0)
-    {
-        key = k;
-        data = v;
+        brand = brand_;
+        color = color_;
+        serial_num = serial_num_;
+        num_of_doors = num_of_doors_;
+        year_of_present = year_of_present_;
+        price = price_;
         cout << "\nSupClass constructor";
     }
 
-    ~SupClass() { cout << "\nSupClass destructor"; }
+    ~Car() { cout << "\nSupClass destructor"; }
 
-    friend ostream &operator<<(ostream &s, SupClass &value);
-    friend int compare(SupClass s1, SupClass s2);
+    string getBrand() { return brand; }
+    string getColor() { return color; }
+    string getSerialNum() { return serial_num; }
+    int getNumOfdoors() { return num_of_doors; }
+    int getYearOfPresent() { return year_of_present; }
+    int getPrice() { return price; }
+
+    bool operator==(const Car &rhs)
+    {
+        if (*this == rhs)
+            return true;
+        return false;
+    }
+    
+    friend ostream &operator<<(ostream &s, Car &value);
 };
 
-ostream &operator<<(ostream &s, SupClass &value)
+
+ostream &operator<<(ostream &s, Car &value)
 {
-    s << value.key << ", " << value.data;
+    s << "\n\tInfo about car";
+    s << "\n-------------------------------\n";
+    s << "Brand of car: " << value.getBrand() << "\n";
+    s << "Color: " << value.getColor() << "\n";
+    s << "Serial number: " << value.getSerialNum() << "\n";
+    s << "Number of car's doors: " << value.getNumOfdoors() << "\n";
+    s << "Year of present: " << value.getYearOfPresent() << "\n";
+    s << "Price: " << value.getPrice() << "\n";
+    s << "-------------------------------\n";
+
     return s;
-}
-
-int compare(SupClass s1, SupClass s2)
-{
-    if (s1.key == s2.key)
-        return 0;
-    else
-        s1.key < s2.key ? -1 : 1;
-}
-
-int even(SupClass s1)
-{
-    s1.key % 2 == 0 ? 1 : 0;
 }
 
 int main()
 {
-    Stack<int> s;
-    for (int i = 0; i < 10; i++)
-    {
-        s.push(i);
-    }
-    cout << s << endl;
-    s.pop();
-    cout << s << endl;
-    cout << s.find(2) << endl;
-    cout << s[5];
+    Car c1("first"), c2("second"), c3("third"), c4("fourth");
 
+    DoubleSidesStack<Car> s;
+    s.push(c1);
+    s.push(c2);
+    s.push(c3);
+    s.push(c4);
+    // cout << s << endl;
+    // s.pop();
+    for (int i = 0; i < s.size(); i++)
+    {
+        cout << s[i] << endl;
+    }
     return 0;
 }
