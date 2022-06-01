@@ -1,9 +1,12 @@
 #include <iostream>
 #include <typeinfo>
 #include <stdarg.h>
+#include <string>
+#include <cstring>
 
 using namespace std;
 
+/*
 int Max(int n, ...)
 {
     int *p = &n;
@@ -30,7 +33,7 @@ double product(double arg, ...)
     }
     return res;
 }
-/*
+
 void my_printf(char *s, ...)
 {
     va_list l;
@@ -62,9 +65,52 @@ void my_printf(char *s, ...)
     va_end(l);
 }
 */
+
+string add(string s, ...)
+{
+    string res("");
+    string *ptr = &s;
+    while(*ptr != "\0")
+    {
+        res += *ptr;
+        ptr++;
+    }
+    return res;
+}
+
+string add(const char *str, ...)
+{
+    string res = "";
+    char *t = const_cast<char*>(str);
+    char **s = &t;
+    //int temp = 0;
+    while(**s != '\n')
+    {
+        string t(*s);
+        res += t;
+        /*
+        if(te == 1)
+        {
+            s+=24;
+        }*/
+        s++;
+        //temp++;
+    }
+    return res;
+}
+
+
+
 int main()
 {
-    printf("%d, %c, %lf, %%", 1, 2, 3., 4);
-    // double b = product(2.0, 2.5, 2.0, 5.0, 6.0, 0.0);
+    // printf("%d, %c, %lf, %%", 1, 2, 3., 4);
+    //  double b = product(2.0, 2.5, 2.0, 5.0, 6.0, 0.0);
+
+    const char *s1("asd"), *s2("ahshd"), *s3("mnwer"), *s4("\n");
+
+    cout << add(s1, s2, s3, s4);
+
+    
+    //cout << s; //&v[0] << " " << &v[1];
     return 0;
 }

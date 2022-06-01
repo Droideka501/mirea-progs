@@ -52,7 +52,7 @@ isinner(P::Vector2D, s::Segment2D) =
     (s.A.x <= P.x <= s.B.x || s.A.x >= P.x >= s.B.x)  && 
     (s.A.y <= P.y <= s.B.y || s.A.y >= P.y >= s.B.y)
 
-#--==================================================================
+#=--==================================================================
 abstract type AbstractPolygon{T<:Real} end
 
 struct Polygon{T} <: AbstracPolygon{T} 
@@ -169,3 +169,4 @@ quad_len(vec) = dot(vec, vec)
 function grekhom(points::Vector{Vector2D{T}})::ConvexPolygon{T} where T<:Real # алгоритм Грехома построения выпуклой оболочки заданного множества точек плоскости
     
 end
+=#

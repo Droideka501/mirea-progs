@@ -359,9 +359,10 @@ public:
             }
         }
     }
-
-    friend ostream &operator<<(ostream &s, BaseMatrix &M);
-    friend istream &operator>>(istream &s, BaseMatrix &M);
+    template <class T1>
+    friend ostream &operator<<(ostream &s, BaseMatrix<T1> &M);
+    template <class T2>
+    friend istream &operator>>(istream &s, BaseMatrix<T2> &M);
 };
 
 template <class T1>
@@ -410,7 +411,7 @@ istream &operator>>(istream &s, BaseMatrix<T2> &M)
 
             M.width = w;
             M.height = h;
-            M.ptr = new T1 *[M.height];
+            M.ptr = new T2 *[M.height];
             for (int i = 0; i < M.height; i++)
             {
                 M.ptr[i] = new T2[M.width];
@@ -484,7 +485,7 @@ public:
         {
             for (int j = 0; j < BaseMatrix<T>::width; j++)
             {
-                ptr[i][j] = rand() % max_rand;
+                BaseMatrix<T>::ptr[i][j] = rand() % max_rand;
             }
         }
         Sleep(1000);
@@ -494,8 +495,8 @@ public:
     {
         s << *this;
     }
-
-    friend void geometricMeanOfRows(Matrix &M, vector<double> &v);
+    template <class T1>
+    friend void geometricMeanOfRows(Matrix<T1> &M, vector<double> &v);
 };
 
 template <class T>

@@ -74,6 +74,9 @@ public:
     //добавить элемент в середину списка
     virtual Element<T> *insert(T &value, Element<T> *predessesor = NULL) = 0;
 
+    virtual Element<T> *remove(T &value, Element<T> *predessesor = NULL) = 0;
+
+
     //поиск элемента в списке
     virtual Element<T> *find(T &value) = 0;
 
@@ -328,6 +331,11 @@ public:
         return inserted;
     }
 
+    virtual Element<T> *remove(T value, Element<T> *predessesor = NULL)
+    {
+        
+    }
+
     virtual Element<T> &operator[](int index)
     {
         if (LinkedList<T>::head == NULL)
@@ -367,7 +375,7 @@ ostream operator<<(ostream &s, const DoubleSidesStack<T3> &stack)
 {
 }
 
-class Car
+class Car   
 {
 private:
     string brand;
