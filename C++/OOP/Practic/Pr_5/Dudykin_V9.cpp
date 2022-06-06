@@ -147,7 +147,7 @@ public:
     //конструкторы
     NegativeIndexException(char *s, int Row_index, int Col_index) : IndexOutOfBounds(s, Row_index, Col_index) {}
     NegativeIndexException(const char *s, int Row_index, int Col_index) : IndexOutOfBounds(s, Row_index, Col_index) {}
-    NegativeIndexException(const NegativeIndexException &e) : IndexOutOfBounds((IndexOutOfBounds &)e) {}
+    NegativeIndexException(const NegativeIndexException &e) : IndexOutOfBounds(e) {}
 
     virtual void print()
     {
@@ -161,7 +161,7 @@ public:
     //конструкторы
     IndexTooLargeException(char *s, int Row_index, int Col_index) : IndexOutOfBounds(s, Row_index, Col_index) {}
     IndexTooLargeException(const char *s, int Row_index, int Col_index) : IndexOutOfBounds(s, Row_index, Col_index) {}
-    IndexTooLargeException(const IndexTooLargeException &e) : IndexOutOfBounds((IndexOutOfBounds &)e) {}
+    IndexTooLargeException(const IndexTooLargeException &e) : IndexOutOfBounds(e) {}
 
     //вывод сообщения - переопределение виртуальной функции базового класса
     virtual void print()
@@ -557,8 +557,8 @@ int main()
         fin.open("text.txt");
         if (fin.is_open())
         {
-            fin >> M >> M2 >> M3 >> M1;
-            /* как было, но тоже рабочий вариант
+            //fin >> M >> M2 >> M3 >> M1;
+            // как было, но тоже рабочий вариант
             fin >> M;
             Matrix<double> MF1(fin), MF2, MF3;
             fin >> MF2 >> MF3;
@@ -568,7 +568,7 @@ int main()
             M2 = MF2;
             M3.resizeToOther(MF3);
             M3 = MF3;
-            */
+            
             fin.close();
         }
         cout << M << endl

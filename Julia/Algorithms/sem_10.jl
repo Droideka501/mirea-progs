@@ -95,12 +95,6 @@ function solutionSLAE(A, b)
     return D
 end
 
-"""function reversMatrix(M)
-    Matrix = M
-    E = diagm([1 for i in 1:size(Matrix, 1)])
-    D = hcat(Matrix, E)
-    transformToSteps!(D)
-"""
 
 """Обратная матрица"""
 function inverse(M)
