@@ -85,7 +85,8 @@ end
 """Быстрое взятие логарифма по снованию a из x"""
 function quick_log_a(x, a)
     z, t, y = x, 1, 0
-    while z > a || z < 1/a || t > ε   
+    while z > a || z < 1/a || t > 1e-10  
+        print("x = ", x, " a = ", a, " z = ", z, " t = ", t, " y = ", y, "\n")
         if z > a
             z /= a
             y += t 
@@ -98,24 +99,6 @@ function quick_log_a(x, a)
         end
     end
     return y
-end
-
-"""Решение нелинейного уравнения методом деления отрезка пополам"""
-function bisect(f::Funcnion, a, b, ε)
-    y_a=f(a)
-    while b-a > ε
-        x_m = (a+b)/2
-        y_m=f(x_m)
-        if y_m==0
-            return x_m
-        end
-        if y_m*y_a > 0 
-            a=x_m
-        else
-            b=x_m
-        end
-    end
-    return (a+b)/2
 end
 
 """НОД (алгоритм Евклида)"""

@@ -99,16 +99,35 @@ string add(const char *str, ...)
     return res;
 }
 
-
+template<class T>
+T Min(T arg, ...)
+{
+    T *p = &arg;
+    T min_ = *p;
+    while(*p != static_cast<T>(1e-19))
+    {
+        p++;
+        if(*p < min_)
+        {
+            min_ = *p;
+        }
+    }
+    
+    return min_;
+}
 
 int main()
 {
+
+    cout << Min<double>(4., 2., 1., -100., 3., 1e-19) << endl;
+    cout << Min<int>(2, 1, 5, -100, 7, 8, 1e-19) << endl;
+
     // printf("%d, %c, %lf, %%", 1, 2, 3., 4);
     //  double b = product(2.0, 2.5, 2.0, 5.0, 6.0, 0.0);
 
-    const char *s1("asd"), *s2("ahshd"), *s3("mnwer"), *s4("\n");
+    //const char *s1("asd"), *s2("ahshd"), *s3("mnwer"), *s4("\n");
 
-    cout << add(s1, s2, s3, s4);
+    //cout << add(s1, s2, s3, s4);
 
     
     //cout << s; //&v[0] << " " << &v[1];

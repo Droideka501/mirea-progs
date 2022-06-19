@@ -1,4 +1,4 @@
-import Base: +, -, *, cos, sin, sign, angle
+import Base
 import LinearAlgebra
 import Plots
 
@@ -11,11 +11,11 @@ Segment2D{T<:Real} = NamedTuple{(:A, :B),NTuple{2,Vector2D{T}}}
 +(A::Vector2D{T}, B::Vector2D{T}) where {T} = Vector2D{T}(Tuple(A) .+ Tuple(B))
 -(A::Vector2D{T}, B::Vector2D{T}) where {T} = Vector2D{T}(Tuple(A) .- Tuple(B))
 *(coeff::T, A::Vector2D{T}) where {T} = Vector2D{T}(coeff .* Tuple(A))
-LinearAlgebra.norm(a::Vector2D) = norm(Tuple(a))
-LinearAlgebra.dot(a::Vector2D{T}, b::Vector2D{T}) where {T} = dot(Tuple(a), Tuple(b))
-Base.cos(a::Vector2D{T}, b::Vector2D{T}) where {T} = dot(a, b) / norm(a) / norm(b)
+LinearAlgebra.norm(a::Vector2D) = LinearAlgebra.norm(Tuple(a))
+LinearAlgebra.dot(a::Vector2D{T}, b::Vector2D{T}) where {T} = LinearAlgebra.dot(Tuple(a), Tuple(b))
+Base.cos(a::Vector2D{T}, b::Vector2D{T}) where {T} = LinearAlgebra.dot(a, b) / LinearAlgebra.norm(a) / LinearAlgebra.norm(b)
 xdot(a::Vector2D{T}, b::Vector2D{T}) where {T} = a.x * b.y - a.y * b.x
-Base.sin(a::Vector2D{T}, b::Vector2D{T}) where {T} = xdot(a, b) / norm(a) / norm(b)
+Base.sin(a::Vector2D{T}, b::Vector2D{T}) where {T} = xdot(a, b) / LinearAlgebra.norm(a) / LinearAlgebra.norm(b)
 Base.angle(a::Vector2D{T}, b::Vector2D{T}) where {T} = atan(sin(a, b), cos(a, b))
 Base.sign(a::Vector2D{T}, b::Vector2D{T}) where {T} = sign(xdot(a, b))
 
@@ -149,9 +149,9 @@ function jarvis_alg(points::Vector{Vector2D{T}})::ConvexPolygon{T} where {T<:Rea
     end
 
     @assert length(points) > 1
-    ydata = (points[i][2] for i in 1:length(points))
+    ydata = [points[i][2] for i in 1:length(points)]
     i_start = findmin(ydata)
-    convex_shell = [i_start]
+    convex_shell = [i_start[1]]
     ort_base = Vector2D{Int}((1, 0))
     while next!(convex_shell, points, ort_base) != i_start
         ort_base = convex_shell[end] - convex_shell[end-1]
