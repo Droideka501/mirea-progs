@@ -55,7 +55,7 @@ int main()
 
     for (int i = 0; i < mark.size(); i++)
     {
-        std::vector<bool> sub_mark = mark;
+        //std::vector<bool> sub_mark = mark;
         int count_comp = 0;
         if (mark[i] == 0)
         {

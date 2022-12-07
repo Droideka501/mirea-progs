@@ -42,7 +42,11 @@
         "streambuf": "cpp",
         "typeinfo": "cpp",
         "set": "cpp",
-        "ctime": "cpps"
+        "ctime": "cpps",
+        "list": "cpp",
+        "cstring": "cpp",
+        "iomanip": "cpp",
+        "map": "cpp"
     },
     "C_Cpp.intelliSenseEngineFallback": "Enabled"
 }
